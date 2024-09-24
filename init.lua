@@ -1369,6 +1369,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.keymap.set('n', '<leader>tI', function()
         require('typescript-tools.api').toggle_inlay_hints()
       end, vim.tbl_extend('force', opts, { desc = 'Toggle Inlay Hints' }))
+
+      vim.keymap.set('n', '<leader>ts', function()
+        require('typescript-tools.api').sort_imports()
+      end, vim.tbl_extend('force', opts, { desc = 'Sort Imports' }))
     end
   end,
 })
