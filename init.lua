@@ -15,8 +15,8 @@
 ========         `"")----------------(""`   ___________      ========
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
 ========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
+        ========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
+  ========                                                     ========
 =====================================================================
 =====================================================================
 
@@ -222,10 +222,38 @@ require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-rhubarb',
   'tpope/vim-fugitive',
+  'ojroques/vim-oscyank',
+  'rust-lang/rust.vim',
   -- 'github/copilot.vim',
   'sindrets/diffview.nvim',
   '0xmovses/move.vim',
   'ThePrimeagen/vim-be-good',
+  {
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    opts = {},
+  },
+  {
+    'robitx/gp.nvim',
+    config = function()
+      local conf = {
+        -- For customization, refer to Install > Configuration in the Documentation/Readme
+        providers = {
+          ollama = {
+            endpoint = 'https://ollama.europarkland.online/v1/chat/completions',
+          },
+          googleai = {
+            endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/{{model}}:streamGenerateContent?key={{secret}}',
+            secret = os.getenv 'GOOGLEAI_API_KEY',
+            model = os.getenv 'GOOGLEAI_MODEL',
+          },
+        },
+      }
+      require('gp').setup(conf)
+
+      -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
+    end,
+  },
   {
     'epwalsh/pomo.nvim',
     version = '*', -- Recommended, use latest release instead of latest commit
@@ -306,28 +334,28 @@ require('lazy').setup({
       },
     },
   },
-  {
-    'yetone/avante.nvim',
-    event = 'VeryLazy',
-    build = 'make',
-    opts = {
-      -- add any opts here
-    },
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-      'stevearc/dressing.nvim',
-      'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
-      --- The below is optional, make sure to setup it properly if you have lazy=true
-      {
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { 'markdown', 'Avante' },
-        },
-        ft = { 'markdown', 'Avante' },
-      },
-    },
-  },
+  -- {
+  --   'yetone/avante.nvim',
+  --   event = 'VeryLazy',
+  --   build = 'make',
+  --   opts = {
+  --     -- add any opts here
+  --   },
+  --   dependencies = {
+  --     'nvim-tree/nvim-web-devicons',
+  --     'stevearc/dressing.nvim',
+  --     'nvim-lua/plenary.nvim',
+  --     'MunifTanjim/nui.nvim',
+  --     --- The below is optional, make sure to setup it properly if you have lazy=true
+  --     {
+  --       'MeanderingProgrammer/render-markdown.nvim',
+  --       opts = {
+  --         file_types = { 'markdown', 'Avante' },
+  --       },
+  --       ft = { 'markdown', 'Avante' },
+  --     },
+  --   },
+  -- },
   {
     'MeanderingProgrammer/render-markdown.nvim',
     opts = {
@@ -740,7 +768,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
+        -- tsserver = {},
         --
 
         lua_ls = {
@@ -963,13 +991,13 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      -- vim.cmd.colorscheme 'tokyonight-night'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
   },
-
+  { 'diegoulloao/neofusion.nvim', priority = 1000, config = true },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -1117,6 +1145,7 @@ require('nvim-tree').setup {
     update_cwd = true,
   },
 }
+-- require('bufferline').setup {}
 vim.api.nvim_set_keymap('n', '<C-m>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 -- Vertical split
 vim.api.nvim_set_keymap('n', '<leader>vs', ':vsplit<CR>', { noremap = true, silent = true })
@@ -1160,4 +1189,186 @@ end
 vim.api.nvim_set_keymap('n', '<leader>tc', ':lua toggle_completion()<CR>', { noremap = true, silent = true })
 
 -- Toggle Diff View
-vim.api.nvim_set_keymap('n', '<leader>dv', ':D iffviewOpen<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>dv', ':DiffviewOpen<CR>', { noremap = true, silent = true })
+
+-- GP Which Key
+require('which-key').add {
+  -- VISUAL mode mappings
+  -- s, x, v modes are handled the same way by which_key
+  {
+    mode = { 'v' },
+    nowait = true,
+    remap = false,
+    { '<C-g><C-t>', ":<C-u>'<,'>GpChatNew tabnew<cr>", desc = 'ChatNew tabnew' },
+    { '<C-g><C-v>', ":<C-u>'<,'>GpChatNew vsplit<cr>", desc = 'ChatNew vsplit' },
+    { '<C-g><C-x>', ":<C-u>'<,'>GpChatNew split<cr>", desc = 'ChatNew split' },
+    { '<C-g>a', ":<C-u>'<,'>GpAppend<cr>", desc = 'Visual Append (after)' },
+    { '<C-g>b', ":<C-u>'<,'>GpPrepend<cr>", desc = 'Visual Prepend (before)' },
+    { '<C-g>c', ":<C-u>'<,'>GpChatNew<cr>", desc = 'Visual Chat New' },
+    { '<C-g>g', group = 'generate into new ..' },
+    { '<C-g>ge', ":<C-u>'<,'>GpEnew<cr>", desc = 'Visual GpEnew' },
+    { '<C-g>gn', ":<C-u>'<,'>GpNew<cr>", desc = 'Visual GpNew' },
+    { '<C-g>gp', ":<C-u>'<,'>GpPopup<cr>", desc = 'Visual Popup' },
+    { '<C-g>gt', ":<C-u>'<,'>GpTabnew<cr>", desc = 'Visual GpTabnew' },
+    { '<C-g>gv', ":<C-u>'<,'>GpVnew<cr>", desc = 'Visual GpVnew' },
+    { '<C-g>i', ":<C-u>'<,'>GpImplement<cr>", desc = 'Implement selection' },
+    { '<C-g>n', '<cmd>GpNextAgent<cr>', desc = 'Next Agent' },
+    { '<C-g>p', ":<C-u>'<,'>GpChatPaste<cr>", desc = 'Visual Chat Paste' },
+    { '<C-g>r', ":<C-u>'<,'>GpRewrite<cr>", desc = 'Visual Rewrite' },
+    { '<C-g>s', '<cmd>GpStop<cr>', desc = 'GpStop' },
+    { '<C-g>t', ":<C-u>'<,'>GpChatToggle<cr>", desc = 'Visual Toggle Chat' },
+    { '<C-g>w', group = 'Whisper' },
+    { '<C-g>wa', ":<C-u>'<,'>GpWhisperAppend<cr>", desc = 'Whisper Append' },
+    { '<C-g>wb', ":<C-u>'<,'>GpWhisperPrepend<cr>", desc = 'Whisper Prepend' },
+    { '<C-g>we', ":<C-u>'<,'>GpWhisperEnew<cr>", desc = 'Whisper Enew' },
+    { '<C-g>wn', ":<C-u>'<,'>GpWhisperNew<cr>", desc = 'Whisper New' },
+    { '<C-g>wp', ":<C-u>'<,'>GpWhisperPopup<cr>", desc = 'Whisper Popup' },
+    { '<C-g>wr', ":<C-u>'<,'>GpWhisperRewrite<cr>", desc = 'Whisper Rewrite' },
+    { '<C-g>wt', ":<C-u>'<,'>GpWhisperTabnew<cr>", desc = 'Whisper Tabnew' },
+    { '<C-g>wv', ":<C-u>'<,'>GpWhisperVnew<cr>", desc = 'Whisper Vnew' },
+    { '<C-g>ww', ":<C-u>'<,'>GpWhisper<cr>", desc = 'Whisper' },
+    { '<C-g>x', ":<C-u>'<,'>GpContext<cr>", desc = 'Visual GpContext' },
+  },
+
+  -- NORMAL mode mappings
+  {
+    mode = { 'n' },
+    nowait = true,
+    remap = false,
+    { '<C-g><C-t>', '<cmd>GpChatNew tabnew<cr>', desc = 'New Chat tabnew' },
+    { '<C-g><C-v>', '<cmd>GpChatNew vsplit<cr>', desc = 'New Chat vsplit' },
+    { '<C-g><C-x>', '<cmd>GpChatNew split<cr>', desc = 'New Chat split' },
+    { '<C-g>a', '<cmd>GpAppend<cr>', desc = 'Append (after)' },
+    { '<C-g>b', '<cmd>GpPrepend<cr>', desc = 'Prepend (before)' },
+    { '<C-g>c', '<cmd>GpChatNew<cr>', desc = 'New Chat' },
+    { '<C-g>f', '<cmd>GpChatFinder<cr>', desc = 'Chat Finder' },
+    { '<C-g>g', group = 'generate into new ..' },
+    { '<C-g>ge', '<cmd>GpEnew<cr>', desc = 'GpEnew' },
+    { '<C-g>gn', '<cmd>GpNew<cr>', desc = 'GpNew' },
+    { '<C-g>gp', '<cmd>GpPopup<cr>', desc = 'Popup' },
+    { '<C-g>gt', '<cmd>GpTabnew<cr>', desc = 'GpTabnew' },
+    { '<C-g>gv', '<cmd>GpVnew<cr>', desc = 'GpVnew' },
+    { '<C-g>n', '<cmd>GpNextAgent<cr>', desc = 'Next Agent' },
+    { '<C-g>r', '<cmd>GpRewrite<cr>', desc = 'Inline Rewrite' },
+    { '<C-g>s', '<cmd>GpStop<cr>', desc = 'GpStop' },
+    { '<C-g>t', '<cmd>GpChatToggle<cr>', desc = 'Toggle Chat' },
+    { '<C-g>w', group = 'Whisper' },
+    { '<C-g>wa', '<cmd>GpWhisperAppend<cr>', desc = 'Whisper Append (after)' },
+    { '<C-g>wb', '<cmd>GpWhisperPrepend<cr>', desc = 'Whisper Prepend (before)' },
+    { '<C-g>we', '<cmd>GpWhisperEnew<cr>', desc = 'Whisper Enew' },
+    { '<C-g>wn', '<cmd>GpWhisperNew<cr>', desc = 'Whisper New' },
+    { '<C-g>wp', '<cmd>GpWhisperPopup<cr>', desc = 'Whisper Popup' },
+    { '<C-g>wr', '<cmd>GpWhisperRewrite<cr>', desc = 'Whisper Inline Rewrite' },
+    { '<C-g>wt', '<cmd>GpWhisperTabnew<cr>', desc = 'Whisper Tabnew' },
+    { '<C-g>wv', '<cmd>GpWhisperVnew<cr>', desc = 'Whisper Vnew' },
+    { '<C-g>ww', '<cmd>GpWhisper<cr>', desc = 'Whisper' },
+    { '<C-g>x', '<cmd>GpContext<cr>', desc = 'Toggle GpContext' },
+  },
+
+  -- INSERT mode mappings
+  {
+    mode = { 'i' },
+    nowait = true,
+    remap = false,
+    { '<C-g><C-t>', '<cmd>GpChatNew tabnew<cr>', desc = 'New Chat tabnew' },
+    { '<C-g><C-v>', '<cmd>GpChatNew vsplit<cr>', desc = 'New Chat vsplit' },
+    { '<C-g><C-x>', '<cmd>GpChatNew split<cr>', desc = 'New Chat split' },
+    { '<C-g>a', '<cmd>GpAppend<cr>', desc = 'Append (after)' },
+    { '<C-g>b', '<cmd>GpPrepend<cr>', desc = 'Prepend (before)' },
+    { '<C-g>c', '<cmd>GpChatNew<cr>', desc = 'New Chat' },
+    { '<C-g>f', '<cmd>GpChatFinder<cr>', desc = 'Chat Finder' },
+    { '<C-g>g', group = 'generate into new ..' },
+    { '<C-g>ge', '<cmd>GpEnew<cr>', desc = 'GpEnew' },
+    { '<C-g>gn', '<cmd>GpNew<cr>', desc = 'GpNew' },
+    { '<C-g>gp', '<cmd>GpPopup<cr>', desc = 'Popup' },
+    { '<C-g>gt', '<cmd>GpTabnew<cr>', desc = 'GpTabnew' },
+    { '<C-g>gv', '<cmd>GpVnew<cr>', desc = 'GpVnew' },
+    { '<C-g>n', '<cmd>GpNextAgent<cr>', desc = 'Next Agent' },
+    { '<C-g>r', '<cmd>GpRewrite<cr>', desc = 'Inline Rewrite' },
+    { '<C-g>s', '<cmd>GpStop<cr>', desc = 'GpStop' },
+    { '<C-g>t', '<cmd>GpChatToggle<cr>', desc = 'Toggle Chat' },
+    { '<C-g>w', group = 'Whisper' },
+    { '<C-g>wa', '<cmd>GpWhisperAppend<cr>', desc = 'Whisper Append (after)' },
+    { '<C-g>wb', '<cmd>GpWhisperPrepend<cr>', desc = 'Whisper Prepend (before)' },
+    { '<C-g>we', '<cmd>GpWhisperEnew<cr>', desc = 'Whisper Enew' },
+    { '<C-g>wn', '<cmd>GpWhisperNew<cr>', desc = 'Whisper New' },
+    { '<C-g>wp', '<cmd>GpWhisperPopup<cr>', desc = 'Whisper Popup' },
+    { '<C-g>wr', '<cmd>GpWhisperRewrite<cr>', desc = 'Whisper Inline Rewrite' },
+    { '<C-g>wt', '<cmd>GpWhisperTabnew<cr>', desc = 'Whisper Tabnew' },
+    { '<C-g>wv', '<cmd>GpWhisperVnew<cr>', desc = 'Whisper Vnew' },
+    { '<C-g>ww', '<cmd>GpWhisper<cr>', desc = 'Whisper' },
+    { '<C-g>x', '<cmd>GpContext<cr>', desc = 'Toggle GpContext' },
+  },
+}
+
+-- Osc Yank
+vim.keymap.set('n', '<leader>c', '<Plug>OSCYankOperator')
+vim.keymap.set('n', '<leader>cc', '<leader>c_', { remap = true })
+vim.keymap.set('v', '<leader>c', '<Plug>OSCYankVisual')
+
+-- Folding
+vim.keymap.set('n', '<leader>A', '<cmd>set foldmethod?^foldmethod<CR>', { desc = 'set or clear the current foldmethod' })
+vim.g.rust_fold = 1
+
+-- color scheme
+vim.cmd.colorscheme 'neofusion'
+
+-- Add missing imports
+vim.api.nvim_set_keymap(
+  'n',
+  '<leader>ai',
+  '<cmd>lua vim.lsp.buf.code_action({context = {only = {"source.addMissingImports"}}, apply = true})<CR>',
+  { noremap = true, silent = true }
+)
+
+-- Trying to fix OSCYank issue in tmux
+vim.g.clipboard = {
+  name = 'tmux',
+  copy = {
+    ['+'] = 'tmux load-buffer -w -',
+    ['*'] = 'tmux load-buffer -w -',
+  },
+  paste = {
+    ['+'] = 'tmux save-buffer -',
+    ['*'] = 'tmux save-buffer -',
+  },
+  cache_enabled = true,
+}
+
+-- Better typescript support
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('TypeScriptConfig', {}),
+  callback = function(ev)
+    local buf = ev.buf
+    local opts = { buffer = buf }
+
+    -- Check if the attached LSP is typescript-tools
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client and client.name == 'typescript-tools' then
+      -- TypeScript-specific keymaps
+      vim.keymap.set('n', '<leader>to', function()
+        require('typescript-tools.api').organize_imports()
+      end, vim.tbl_extend('force', opts, { desc = 'Organize Imports' }))
+
+      vim.keymap.set('n', '<leader>tu', function()
+        require('typescript-tools.api').remove_unused_imports()
+      end, vim.tbl_extend('force', opts, { desc = 'Remove Unused Imports' }))
+
+      vim.keymap.set('n', '<leader>ti', function()
+        require('typescript-tools.api').add_missing_imports()
+      end, vim.tbl_extend('force', opts, { desc = 'Add Missing Imports' }))
+
+      vim.keymap.set('n', '<leader>tR', function()
+        require('typescript-tools.api').rename_file()
+      end, vim.tbl_extend('force', opts, { desc = 'Rename File' }))
+
+      vim.keymap.set('n', '<leader>tf', function()
+        require('typescript-tools.api').fix_all()
+      end, vim.tbl_extend('force', opts, { desc = 'Fix All' }))
+
+      vim.keymap.set('n', '<leader>tI', function()
+        require('typescript-tools.api').toggle_inlay_hints()
+      end, vim.tbl_extend('force', opts, { desc = 'Toggle Inlay Hints' }))
+    end
+  end,
+})
