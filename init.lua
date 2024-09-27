@@ -219,7 +219,7 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-rhubarb',
   'tpope/vim-fugitive',
   'ojroques/vim-oscyank',
@@ -229,9 +229,48 @@ require('lazy').setup({
   '0xmovses/move.vim',
   'ThePrimeagen/vim-be-good',
   {
+    'christoomey/vim-tmux-navigator',
+    cmd = {
+      'TmuxNavigateLeft',
+      'TmuxNavigateDown',
+      'TmuxNavigateUp',
+      'TmuxNavigateRight',
+      'TmuxNavigatePrevious',
+    },
+    keys = {
+      { '<c-h>', '<cmd><C-U>TmuxNavigateLeft<cr>' },
+      { '<c-j>', '<cmd><C-U>TmuxNavigateDown<cr>' },
+      { '<c-k>', '<cmd><C-U>TmuxNavigateUp<cr>' },
+      { '<c-l>', '<cmd><C-U>TmuxNavigateRight<cr>' },
+      { '<c-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>' },
+    },
+  },
+  {
+    'chentoast/marks.nvim',
+    event = 'VeryLazy',
+    opts = {},
+  },
+  {
+    'kylechui/nvim-surround',
+    version = '*', -- Use for stability; omit to use `main` branch for the latest features
+    event = 'VeryLazy',
+    config = function()
+      require('nvim-surround').setup {
+        -- Configuration here, or leave empty to use defaults
+      }
+    end,
+  },
+  {
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {},
+    opts = {
+      settings = {
+        tsserver_file_preferences = {
+          tabSize = 2,
+          importModuleSpecifierPreference = 'relative',
+        },
+      },
+    },
   },
   {
     'robitx/gp.nvim',
@@ -241,11 +280,22 @@ require('lazy').setup({
         providers = {
           ollama = {
             endpoint = 'https://ollama.europarkland.online/v1/chat/completions',
+            model = 'llama3.2',
           },
           googleai = {
             endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/{{model}}:streamGenerateContent?key={{secret}}',
             secret = os.getenv 'GOOGLEAI_API_KEY',
             model = os.getenv 'GOOGLEAI_MODEL',
+          },
+        },
+        agents = {
+          {
+            name = 'Llama 3.2',
+            provider = 'ollama',
+            chat = true,
+            command = false,
+            model = { model = 'llama3.2' },
+            system_prompt = 'You are a helpful assistant.',
           },
         },
       }
@@ -524,8 +574,6 @@ require('lazy').setup({
             '--column',
             '--smart-case',
             '--hidden',
-            '--glob',
-            '!.git',
           },
         },
         -- You can put your default mappings / updates / etc. in here
@@ -539,7 +587,7 @@ require('lazy').setup({
         -- pickers = {}
         pickers = {
           find_files = {
-            find_command = { 'rg', '--files', '--hidden', '--glob', '!.git' },
+            find_command = { 'rg', '--ignore', '--files', '--hidden', '--glob', '!.git' },
           },
         },
         extensions = {
@@ -848,6 +896,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         rust = { 'rustfmt', lsp_format = 'fallback' },
         html = { 'prettierd', 'prettier', stop_after_first = true },
         markdown = { 'prettierd', 'prettier', stop_after_first = true },
@@ -860,6 +909,15 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      },
+      formatters = {
+        prettier = {
+          -- This tells prettier to look for a local config file
+          prepend_args = { '--config-precedence', 'prefer-file' },
+          cwd = function(ctx)
+            return vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h')
+          end,
+        },
       },
     },
   },
@@ -1154,22 +1212,22 @@ vim.api.nvim_set_keymap('n', '<leader>vs', ':vsplit<CR>', { noremap = true, sile
 vim.api.nvim_set_keymap('n', '<leader>hs', ':split<CR>', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<C-t>', ':tabnew<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
-
+-- vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
+--
 -- This line creates a mapping in insert mode
 vim.api.nvim_set_keymap('i', 'jk', '<Esc>', { noremap = true, silent = true })
 
 vim.wo.foldmethod = 'expr'
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
-vim.api.nvim_set_keymap('i', '<M-f>', '<Right>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<M-b>', '<Left>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<M-p>', '<Up>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<M-n>', '<Down>', { noremap = true, silent = true })
-
+-- vim.api.nvim_set_keymap('i', '<M-f>', '<Right>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('i', '<M-b>', '<Left>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('i', '<M-p>', '<Up>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('i', '<M-n>', '<Down>', { noremap = true, silent = true })
+--
 -- Git Browse
 vim.api.nvim_set_keymap('n', '<leader>gh', ':GBrowse<CR>', { noremap = true, silent = true })
 
@@ -1374,5 +1432,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
         require('typescript-tools.api').sort_imports()
       end, vim.tbl_extend('force', opts, { desc = 'Sort Imports' }))
     end
+  end,
+})
+
+-- Lua indentation
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'lua',
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.expandtab = true
+    vim.opt_local.softtabstop = 2
   end,
 })
