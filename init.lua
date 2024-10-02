@@ -222,28 +222,20 @@ require('lazy').setup({
   -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-rhubarb',
   'tpope/vim-fugitive',
+  'sheerun/vim-polyglot',
   'ojroques/vim-oscyank',
   'rust-lang/rust.vim',
+  'gpanders/editorconfig.nvim',
+  'prettier/vim-prettier',
   -- 'github/copilot.vim',
   'sindrets/diffview.nvim',
   '0xmovses/move.vim',
   'ThePrimeagen/vim-be-good',
   {
-    'christoomey/vim-tmux-navigator',
-    cmd = {
-      'TmuxNavigateLeft',
-      'TmuxNavigateDown',
-      'TmuxNavigateUp',
-      'TmuxNavigateRight',
-      'TmuxNavigatePrevious',
-    },
-    keys = {
-      { '<c-h>', '<cmd><C-U>TmuxNavigateLeft<cr>' },
-      { '<c-j>', '<cmd><C-U>TmuxNavigateDown<cr>' },
-      { '<c-k>', '<cmd><C-U>TmuxNavigateUp<cr>' },
-      { '<c-l>', '<cmd><C-U>TmuxNavigateRight<cr>' },
-      { '<c-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>' },
-    },
+    'aserowy/tmux.nvim',
+    config = function()
+      return require('tmux').setup()
+    end,
   },
   {
     'chentoast/marks.nvim',
@@ -266,8 +258,13 @@ require('lazy').setup({
     opts = {
       settings = {
         tsserver_file_preferences = {
-          tabSize = 2,
           importModuleSpecifierPreference = 'relative',
+        },
+        tsserver_format_options = {
+          -- This will make the language server respect .prettierrc files
+          insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
+          insertSpaceAfterKeywordsInControlFlowStatements = true,
+          insertSpaceBeforeFunctionParenthesis = false,
         },
       },
     },
@@ -809,7 +806,7 @@ require('lazy').setup({
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
-        -- rust_analyzer = {},
+        rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -1128,7 +1125,7 @@ require('lazy').setup({
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { 'ruby', 'javascript', 'typescript', 'rust', 'json', 'markdown', 'yaml' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -1413,15 +1410,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
       end, vim.tbl_extend('force', opts, { desc = 'Remove Unused Imports' }))
 
       vim.keymap.set('n', '<leader>ti', function()
-        require('typescript-tools.api').add_missing_imports()
+        require('typescript-tools.api').add_missing_imports(true)
       end, vim.tbl_extend('force', opts, { desc = 'Add Missing Imports' }))
 
       vim.keymap.set('n', '<leader>tR', function()
-        require('typescript-tools.api').rename_file()
+        require('typescript-tools.api').rename_file(true)
       end, vim.tbl_extend('force', opts, { desc = 'Rename File' }))
 
       vim.keymap.set('n', '<leader>tf', function()
-        require('typescript-tools.api').fix_all()
+        require('typescript-tools.api').fix_all(true)
       end, vim.tbl_extend('force', opts, { desc = 'Fix All' }))
 
       vim.keymap.set('n', '<leader>tI', function()
@@ -1445,3 +1442,22 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt_local.softtabstop = 2
   end,
 })
+
+-- Reload nvim config
+function ReloadConfig()
+  -- Clear and reload all Lua modules
+  for name, _ in pairs(package.loaded) do
+    if name:match '^user' or name:match '^plugins' then
+      package.loaded[name] = nil
+    end
+  end
+
+  -- Re-initialize lazy.nvim
+  require('lazy').sync()
+
+  -- Reload your main configuration file
+  dofile(vim.env.MYVIMRC)
+
+  -- Notify the user
+  vim.notify('Nvim configuration reloaded!', vim.log.levels.INFO)
+end
