@@ -222,15 +222,36 @@ require('lazy').setup({
   -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-rhubarb',
   'tpope/vim-fugitive',
+  'tpope/vim-markdown',
   'sheerun/vim-polyglot',
   'ojroques/vim-oscyank',
   'rust-lang/rust.vim',
   'gpanders/editorconfig.nvim',
+  'tmux-plugins/vim-tmux',
+  'nvim-pack/nvim-spectre',
   'prettier/vim-prettier',
   -- 'github/copilot.vim',
   'sindrets/diffview.nvim',
   '0xmovses/move.vim',
   'ThePrimeagen/vim-be-good',
+  'neoclide/coc.nvim',
+  {
+    'folke/twilight.nvim',
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+  },
+  {
+    'stevearc/aerial.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+    },
+  },
   {
     'aserowy/tmux.nvim',
     config = function()
@@ -253,23 +274,6 @@ require('lazy').setup({
     end,
   },
   {
-    'pmizio/typescript-tools.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {
-      settings = {
-        tsserver_file_preferences = {
-          importModuleSpecifierPreference = 'relative',
-        },
-        tsserver_format_options = {
-          -- This will make the language server respect .prettierrc files
-          insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
-          insertSpaceAfterKeywordsInControlFlowStatements = true,
-          insertSpaceBeforeFunctionParenthesis = false,
-        },
-      },
-    },
-  },
-  {
     'robitx/gp.nvim',
     config = function()
       local conf = {
@@ -277,7 +281,7 @@ require('lazy').setup({
         providers = {
           ollama = {
             endpoint = 'https://ollama.europarkland.online/v1/chat/completions',
-            model = 'llama3.2',
+            model = 'llama3.1',
           },
           googleai = {
             endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/{{model}}:streamGenerateContent?key={{secret}}',
@@ -287,11 +291,11 @@ require('lazy').setup({
         },
         agents = {
           {
-            name = 'Llama 3.2',
+            name = 'Llama 3.1 70b',
             provider = 'ollama',
             chat = true,
             command = false,
-            model = { model = 'llama3.2' },
+            model = { model = 'llama3.1:70b' },
             system_prompt = 'You are a helpful assistant.',
           },
         },
@@ -359,7 +363,12 @@ require('lazy').setup({
   {
     'supermaven-inc/supermaven-nvim',
     config = function()
-      require('supermaven-nvim').setup {}
+      require('supermaven-nvim').setup {
+        color = {
+          suggestion_color = '#C1FFC1',
+          cterm = 244,
+        },
+      }
     end,
   },
   'nvim-tree/nvim-tree.lua',
@@ -565,12 +574,12 @@ require('lazy').setup({
           vimgrep_arguments = {
             'rg',
             '--color=never',
+            '--ignore',
             '--no-heading',
             '--with-filename',
+            '--smart-case',
             '--line-number',
             '--column',
-            '--smart-case',
-            '--hidden',
           },
         },
         -- You can put your default mappings / updates / etc. in here
@@ -584,12 +593,24 @@ require('lazy').setup({
         -- pickers = {}
         pickers = {
           find_files = {
-            find_command = { 'rg', '--ignore', '--files', '--hidden', '--glob', '!.git' },
+            find_command = { 'rg', '--ignore', '--files', '--smart-case' },
           },
         },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
+          },
+          aerial = {
+            -- How to format the symbols
+            format_symbol = function(symbol_path, filetype)
+              if filetype == 'json' or filetype == 'yaml' then
+                return table.concat(symbol_path, '.')
+              else
+                return symbol_path[#symbol_path]
+              end
+            end,
+            -- Available modes: symbols, lines, both
+            show_columns = 'both',
           },
         },
       }
@@ -597,6 +618,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'aerial')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -915,6 +937,23 @@ require('lazy').setup({
             return vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h')
           end,
         },
+        injected = {
+          options = {
+            -- Set individual option values
+            ignore_errors = true,
+            lang_to_ext = {
+              bash = 'sh',
+              json = 'json',
+              javascript = 'js',
+              markdown = 'md',
+              python = 'py',
+              rust = 'rs',
+              typescript = 'ts',
+              typescriptreact = 'tsx',
+            },
+            lang_to_formatters = {},
+          },
+        },
       },
     },
   },
@@ -1030,6 +1069,7 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'supermaven' },
         },
       }
     end,
@@ -1184,6 +1224,7 @@ require('lazy').setup({
 -- vim: ts=2 sts=2 sw=2 et
 -- -- views can only be fully collapsed with the global statusline
 vim.opt.laststatus = 3
+
 -- Default splitting will cause your main splits to jump when opening an edgebar.
 -- To prevent this, set `splitkeep` to either `screen` or `topline`.
 vim.opt.splitkeep = 'screen'
@@ -1198,6 +1239,20 @@ require('nvim-tree').setup {
   update_focused_file = {
     enable = true,
     update_cwd = true,
+  },
+  diagnostics = {
+    enable = true,
+    show_on_dirs = true,
+    icons = {
+      hint = '',
+      info = '',
+      warning = '',
+      error = '',
+    },
+  },
+  -- Disable notifications if they're bothering you
+  notify = {
+    threshold = vim.log.levels.ERROR, -- Only show error level notifications
   },
 }
 -- require('bufferline').setup {}
@@ -1368,6 +1423,10 @@ vim.g.rust_fold = 1
 -- color scheme
 vim.cmd.colorscheme 'neofusion'
 
+--- 'enable modeline'
+vim.opt.modeline = true
+vim.opt.modelines = 5
+
 -- Add missing imports
 vim.api.nvim_set_keymap(
   'n',
@@ -1389,48 +1448,6 @@ vim.g.clipboard = {
   },
   cache_enabled = true,
 }
-
--- Better typescript support
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('TypeScriptConfig', {}),
-  callback = function(ev)
-    local buf = ev.buf
-    local opts = { buffer = buf }
-
-    -- Check if the attached LSP is typescript-tools
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if client and client.name == 'typescript-tools' then
-      -- TypeScript-specific keymaps
-      vim.keymap.set('n', '<leader>to', function()
-        require('typescript-tools.api').organize_imports()
-      end, vim.tbl_extend('force', opts, { desc = 'Organize Imports' }))
-
-      vim.keymap.set('n', '<leader>tu', function()
-        require('typescript-tools.api').remove_unused_imports()
-      end, vim.tbl_extend('force', opts, { desc = 'Remove Unused Imports' }))
-
-      vim.keymap.set('n', '<leader>ti', function()
-        require('typescript-tools.api').add_missing_imports(true)
-      end, vim.tbl_extend('force', opts, { desc = 'Add Missing Imports' }))
-
-      vim.keymap.set('n', '<leader>tR', function()
-        require('typescript-tools.api').rename_file(true)
-      end, vim.tbl_extend('force', opts, { desc = 'Rename File' }))
-
-      vim.keymap.set('n', '<leader>tf', function()
-        require('typescript-tools.api').fix_all(true)
-      end, vim.tbl_extend('force', opts, { desc = 'Fix All' }))
-
-      vim.keymap.set('n', '<leader>tI', function()
-        require('typescript-tools.api').toggle_inlay_hints()
-      end, vim.tbl_extend('force', opts, { desc = 'Toggle Inlay Hints' }))
-
-      vim.keymap.set('n', '<leader>ts', function()
-        require('typescript-tools.api').sort_imports()
-      end, vim.tbl_extend('force', opts, { desc = 'Sort Imports' }))
-    end
-  end,
-})
 
 -- Lua indentation
 vim.api.nvim_create_autocmd('FileType', {
@@ -1461,3 +1478,47 @@ function ReloadConfig()
   -- Notify the user
   vim.notify('Nvim configuration reloaded!', vim.log.levels.INFO)
 end
+
+-- Support code snippet for markdown
+vim.g.markdown_fenced_languages = { 'json', 'javascript', 'typescript', 'rust', 'bash=sh' }
+
+-- Disable Enter to toggle the nvim-tree
+-- vim.api.nvim_set_keymap('n', '<CR>', '<CR>', { noremap = true })
+
+-- Nvim Spectre Keymaps
+vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', {
+  desc = 'Toggle Spectre',
+})
+vim.keymap.set('n', '<leader>sw', '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', {
+  desc = 'Search current word',
+})
+vim.keymap.set('v', '<leader>sw', '<esc><cmd>lua require("spectre").open_visual()<CR>', {
+  desc = 'Search current word',
+})
+vim.keymap.set('n', '<leader>sp', '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>', {
+  desc = 'Search on current file',
+})
+
+-- Auto suggestion function signature
+vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { silent = true })
+vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { silent = true })
+
+-- For Supermaven suggestion
+vim.api.nvim_set_hl(0, 'CmpItemKindSupermaven', { fg = '#E6E6FA' })
+
+-- Setup For Aerial
+require('aerial').setup {
+  -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+  on_attach = function(bufnr)
+    -- Jump forwards/backwards with '{' and '}'
+    vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr })
+    vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
+  end,
+}
+-- You probably also want to set a keymap to toggle aerial
+vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
+
+-- Twilight
+vim.api.nvim_set_keymap('n', '<leader>tw', ':Twilight<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('i', '<C-z>', 'coc#refresh()', { silent = true, expr = true })
