@@ -234,7 +234,7 @@ require('lazy').setup({
   'sindrets/diffview.nvim',
   '0xmovses/move.vim',
   'ThePrimeagen/vim-be-good',
-  'neoclide/coc.nvim',
+  -- 'neoclide/coc.nvim',
   {
     'folke/twilight.nvim',
     opts = {
@@ -824,6 +824,19 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      local on_attach = function(client, bufnr)
+        -- format on save
+        if client.server_capabilities.documentFormattingProvider then
+          vim.api.nvim_create_autocmd('BufWritePre', {
+            group = vim.api.nvim_create_augroup('Format', { clear = true }),
+            buffer = bufnr,
+            callback = function()
+              vim.lsp.buf.formatting_seq_sync()
+            end,
+          })
+        end
+      end
+
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -835,8 +848,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
+        ts_ls = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -867,6 +879,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'prettierd',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1070,11 +1083,12 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'supermaven' },
+          { name = 'buffer' },
         },
       }
     end,
   },
-
+  --
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
@@ -1520,5 +1534,3 @@ vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
 
 -- Twilight
 vim.api.nvim_set_keymap('n', '<leader>tw', ':Twilight<CR>', { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap('i', '<C-z>', 'coc#refresh()', { silent = true, expr = true })
