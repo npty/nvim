@@ -51,162 +51,295 @@
 - `<C-l>` - Expand snippet or jump forward
 - `<C-h>` - Jump backward in snippet
 
-### Document Symbols and Diagnostics
+## 🌲 NvimTree Commands
 
-- `<leader>ds` - Document symbols (using Telescope)
-- `<leader>ws` - Workspace symbols
-- `<leader>q` - Open diagnostic quickfix list
+- `g?` - Toggle help
+- `<C-]>` - CD into the directory under the cursor
+- `<C-v>` - Open in vertical split
+- `<C-x>` - Open in horizontal split
+- `<C-t>` - Open in new tab
+- `<BS>` - Close current opened directory
+- `a` - Create file/directory
+- `d` - Delete
+- `D` - Trash (if configured)
+- `r` - Rename
+- `R` - Refresh
+- `x` - Cut
+- `c` - Copy
+- `p` - Paste
+- `y` - Copy name
+- `Y` - Copy relative path
+- `gy` - Copy absolute path
+- `]c` - Next git item
+- `[c` - Prev git item
+- `-` - Navigate up to parent directory
+- `s` - Open in system default application
+- `.` - Toggle dotfiles
+- `H` - Toggle hidden files
+- `I` - Toggle gitignore files
 
 ## 🔄 Git Integration
 
+### Fugitive
+
+- `:G` or `:Git` - Main Git command
+- `:Gwrite` or `:Gw` - Git add
+- `:Gread` or `:Gr` - Git checkout (revert)
+- `:Gdiff` - Git diff
+- `:Gblame` - Git blame
+- `:Gremove` - Git rm
+- `:Gmove` - Git mv
+- `cc` - Create commit (in Git status window)
+- `ca` - Amend last commit
+- `]]` - Next hunk
+- `[[` - Previous hunk
+
 ### Gitsigns
 
-- `<leader>h` prefix for Git hunk operations
-- `<leader>gh` - Open in browser (GBrowse)
+Default mappings in normal mode:
+
+- `]c` - Next hunk
+- `[c` - Previous hunk
+- `<leader>hs` - Stage hunk
+- `<leader>hr` - Reset hunk
+- `<leader>hS` - Stage buffer
+- `<leader>hu` - Undo stage hunk
+- `<leader>hR` - Reset buffer
+- `<leader>hp` - Preview hunk
+- `<leader>hb` - Blame line
+- `<leader>tb` - Toggle current line blame
+- `<leader>hd` - Diff this
+- `<leader>hD` - Diff this ~
+- `<leader>td` - Toggle deleted
+
+Visual mode:
+
+- `<leader>hs` - Stage hunk
+- `<leader>hr` - Reset hunk
 
 ### DiffView
 
 - `<leader>dv` - Open DiffView
+- `<tab>` - Next file
+- `<s-tab>` - Previous file
+- `<leader>e` - Toggle file panel
+- `<leader>b` - Toggle file history panel
 
-## 🤖 AI and Completion
+## 🤖 AI and GP Integration
 
-### GP (AI Assistant)
+### GP (AI Assistant) in Visual Mode
 
-GP commands use `<C-g>` prefix:
+- `<C-g><C-t>` - ChatNew tabnew
+- `<C-g><C-v>` - ChatNew vsplit
+- `<C-g><C-x>` - ChatNew split
+- `<C-g>a` - Visual Append
+- `<C-g>b` - Visual Prepend
+- `<C-g>c` - Visual Chat New
+- `<C-g>i` - Implement selection
+- `<C-g>r` - Visual Rewrite
 
-Visual Mode:
+### GP Whisper Commands (Visual Mode)
 
-- `<C-g><C-t>` - New chat in tab
-- `<C-g>r` - Rewrite selection
-- `<C-g>a` - Append
-- `<C-g>b` - Prepend
+- `<C-g>wa` - Whisper Append
+- `<C-g>wb` - Whisper Prepend
+- `<C-g>wn` - Whisper New
+- `<C-g>wp` - Whisper Popup
+- `<C-g>wr` - Whisper Rewrite
 
-Normal Mode:
+### GP Normal Mode Commands
 
-- `<C-g>c` - New chat
-- `<C-g>f` - Chat finder
-- `<C-g>t` - Toggle chat
+- `<C-g>c` - New Chat
+- `<C-g>f` - Chat Finder
+- `<C-g>n` - Next Agent
+- `<C-g>r` - Inline Rewrite
+- `<C-g>t` - Toggle Chat
 
-### Completion Control
-
-- `<leader>tc` - Toggle completion
-- `<C-c>` - Manual completion trigger
-
-## 🔎 Search and Replace
+## 🔎 Search and Navigation
 
 ### Telescope
 
-- `<leader>sh` - Search help tags
-- `<leader>sk` - Search keymaps
-- `<leader>sr` - Resume last search
-- `<leader>/` - Fuzzy search in current buffer with dropdown
+Core mappings (in Telescope window):
 
-### Spectre (Global Search/Replace)
+- `<C-n>/<Down>` - Next item
+- `<C-p>/<Up>` - Previous item
+- `j/k` - Next/previous (normal mode)
+- `H/M/L` - Select High/Middle/Low
+- `gg/G` - Select first/last item
+- `<CR>` - Confirm selection
+- `<C-x>` - Split horizontal
+- `<C-v>` - Split vertical
+- `<C-t>` - Open in new tab
+- `<C-u>` - Scroll up preview window
+- `<C-d>` - Scroll down preview window
+- `<C-/>` - Show mappings
+- `?` - Show help
+
+Insert mode special mappings:
+
+- `<C-c>` - Close telescope
+- `<Tab>` - Toggle selection + next
+- `<S-Tab>` - Toggle selection + prev
+- `<C-space>` - Preview scroll up
+- `<M-space>` - Preview scroll down
+- `<C-q>` - Send to quickfix list
+
+### Spectre (Search and Replace)
 
 - `<leader>S` - Toggle Spectre
 - `<leader>sw` - Search current word
 - `<leader>sp` - Search in current file
+  Inside Spectre window:
+- `dd` - Toggle current item
+- `<leader>R` - Replace all
+- `<leader>rc` - Replace current line
+- `<leader>v` - Change view mode
 
-## 📝 Code Focus and Organization
+## 📝 Code Organization
 
 ### Aerial (Code Outline)
 
-- `<leader>a` - Toggle Aerial outline
+- `<leader>a` - Toggle Aerial window
 - `{` - Previous symbol
 - `}` - Next symbol
+- `[[` - Previous item at same level
+- `]]` - Next item at same level
+- `o` - Jump to symbol and close
+- `O` - Jump to symbol and stay
+- `<C-j>` - Next location same symbol
+- `<C-k>` - Prev location same symbol
 
-### Twilight (Focus Mode)
+### Mini.nvim Features
 
-- `<leader>tw` - Toggle Twilight focus mode
+#### mini.surround
 
-### Folding
+- `sa` - Add surrounding
+- `sd` - Delete surrounding
+- `sr` - Replace surrounding
+- `sn` - Update `n` lines
+- `sF` - Find surrounding
+- `sf` - Find surrounding to the right
+- `sh` - Highlight surrounding
+- `sH` - Highlight surrounding to the right
 
-- `<leader>A` - Show current fold method
-- Treesitter-based folding enabled by default
+#### mini.ai (Text Objects)
+
+- `a)` or `i)` - Around/inside parentheses
+- `a]` or `i]` - Around/inside brackets
+- `a}` or `i}` - Around/inside braces
+- `a'` or `i'` - Around/inside single quotes
+- `a"` or `i"` - Around/inside double quotes
+- `a>` or `i>` - Around/inside angle brackets
+- `at` or `it` - Around/inside tags
 
 ## 🎨 Other Features
 
-### OSC Yank (Terminal Copy)
+### Marks
 
-- `<leader>c` - OSC yank operator
-- `<leader>cc` - OSC yank line
+- `mx` - Set mark x
+- `'x` - Jump to line of mark x
+- `` `x `` - Jump to position of mark x
+- `m,` - Set the next available alphabetical mark
+- `m;` - Toggle the next available mark at the current line
+- `m]` - Move to next mark
+- `m[` - Move to previous mark
+- `m:` - Preview mark
+- `m/` - Show all marks in quickfix window
 
-### Surroundings (mini.surround)
+### LeetCode
 
-- `sa` - Add surroundings
-- `sd` - Delete surroundings
-- `sr` - Replace surroundings
+- `:LeetCodeList` - Browse problems
+- `:LeetCodeTest` - Test solution
+- `:LeetCodeSubmit` - Submit solution
+- `:LeetCodeSignIn` - Sign in
+
+### Markdown Preview
+
+- `:MarkdownPreview` - Start preview
+- `:MarkdownPreviewStop` - Stop preview
+- `:MarkdownPreviewToggle` - Toggle preview
+
+### Terminal
+
+- `<C-\>` - Toggle terminal
+- `<Esc><Esc>` - Exit terminal mode
+  Terminal window commands:
+- `<C-h>/<C-j>/<C-k>/<C-l>` - Window navigation
+- `<C-w>N` - Terminal normal mode
+- `i` or `a` - Back to terminal mode
 
 ## 💡 Pro Tips
 
-1. **LSP and Completion**
+1. **File Navigation**
 
-   - Native LSP with nvim-cmp provides powerful completion
-   - Use `<C-k>` to view function signatures
-   - Completion sources include LSP, buffer, path, and snippets
-
-2. **File Navigation**
-
-   - NvimTree (`<C-m>`) shows project structure with git status
-   - Telescope fuzzy finding is powerful for quick navigation
    - Use `<leader>sf` for quick file access
+   - NvimTree + Telescope combination for efficient navigation
+   - Use marks for quick position jumping
+
+2. **LSP and Completion**
+
+   - Use `<C-k>` for signature help
+   - Auto-pairs automatically close brackets/quotes
+   - Use snippets for common code patterns
 
 3. **Git Workflow**
 
-   - Gitsigns provides inline git information
-   - DiffView gives comprehensive diff viewing
-   - Use `<leader>gh` for quick GitHub access
+   - Fugitive for complex git operations
+   - Gitsigns for inline changes
+   - DiffView for detailed change review
 
-4. **Terminal Integration**
+4. **AI Integration**
 
-   - Toggle terminal with `<C-\>`
-   - Terminal exists in float mode by default
-   - Use `<Esc><Esc>` to exit terminal mode
+   - GP chat for code assistance
+   - Use visual mode selections for context
+   - Whisper mode for voice commands
 
-5. **AI Assistance**
-   - GP commands (`<C-g>` prefix) provide powerful AI features
-   - Use visual selection with GP for context-aware operations
-   - Whisper mode available for voice-to-text
+5. **Performance**
+   - Toggle features when needed
+   - Use lazy loading for plugins
+   - Twilight mode for focus
 
-## ⚙️ Common Commands
+## ⌨️ Key Mapping Conventions
 
-```vim
-:Mason                 " Package manager for LSP servers
-:Lazy                 " Plugin manager
-:checkhealth          " Diagnostic tool
-:LspInfo             " LSP status
-:GpChatNew           " New GP chat
-:NvimTreeToggle      " Toggle file explorer
-:Twilight            " Toggle focus mode
-```
-
-## 🎨 Theme and Appearance
-
-Current colorscheme: Neofusion
-
-Change colorscheme:
-
-```vim
-:colorscheme <scheme-name>
-```
-
-## 🔧 Performance Tips
-
-1. Toggle completion if editor feels slow: `<leader>tc`
-2. Use Twilight mode for better focus and performance
-3. Lazy loading is configured for many plugins
-4. Use Mason to manage LSP servers efficiently
+- `<leader>` - Space key
+- `<CR>` - Enter key
+- `<C-x>` - Control + x
+- `<M-x>` - Alt/Meta + x
+- `<S-x>` - Shift + x
 
 ## 🚀 Getting Started
 
-1. Run `:Tutor` for Vim basics
-2. Use `<leader>sh` to search help
-3. Check `:checkhealth` for any issues
-4. Install language servers via `:Mason`
-5. Configure LSP settings per project needs
+1. First Steps
 
-## 📦 Plugin Management
+   - Run `:Tutor` for Vim basics
+   - Use `<leader>sh` to search help
+   - Check `:checkhealth` for issues
 
-- Use `:Lazy` to manage plugins
-- Update plugins: `:Lazy update`
-- Check plugin status: `:Lazy check`
+2. Language Setup
+
+   - Install language servers via `:Mason`
+   - Configure formatting via `:ConformInfo`
+   - Set up project-specific settings
+
+3. Customization
+   - Check `:Lazy` for plugin status
+   - Modify keymaps in your config
+   - Explore plugin documentation
+
+## 🔧 Maintenance Commands
+
+```vim
+:checkhealth          " System diagnostics
+:Lazy                " Plugin management
+:Mason               " LSP/DAP/Linter management
+:LspInfo            " LSP status
+:TSUpdate           " Update treesitter parsers
+:ConformInfo        " Formatter status
+```
+
+## 📦 Plugin Updates
+
+- `:Lazy update` - Update all plugins
+- `:Lazy sync` - Sync plugins
+- `:Lazy clean` - Remove unused plugins
+- `:TSUpdate` - Update treesitter parsers
+- `:MasonUpdate` - Update Mason packages
