@@ -824,19 +824,6 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      local on_attach = function(client, bufnr)
-        -- format on save
-        if client.server_capabilities.documentFormattingProvider then
-          vim.api.nvim_create_autocmd('BufWritePre', {
-            group = vim.api.nvim_create_augroup('Format', { clear = true }),
-            buffer = bufnr,
-            callback = function()
-              vim.lsp.buf.formatting_seq_sync()
-            end,
-          })
-        end
-      end
-
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -849,6 +836,16 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         ts_ls = {},
+
+        eslint = {},
+
+        tailwindcss = {},
+
+        jsonls = {},
+
+        cssls = {},
+
+        marksman = {},
 
         lua_ls = {
           -- cmd = {...},
