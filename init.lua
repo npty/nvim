@@ -131,8 +131,19 @@ vim.opt.smartcase = true
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
 
--- Decrease update time
-vim.opt.updatetime = 250
+-- Decrease update time to optimize find files
+vim.opt.updatetime = 500
+vim.opt.timeoutlen = 500
+vim.opt.redrawtime = 1500
+vim.opt.hidden = true
+vim.opt.lazyredraw = true
+vim.opt.wildignore = vim.opt.wildignore + {
+  '*/node_modules/*',
+  '*/.git/*',
+  '*/target/*',
+  '*/dist/*',
+  '*/build/*',
+}
 
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
@@ -581,6 +592,18 @@ require('lazy').setup({
             '--line-number',
             '--column',
           },
+          file_sorter = require('telescope.sorters').get_fuzzy_file,
+          generic_sorter = require('telescope.sorters').get_generic_fuzzy_sorter,
+          file_ignore_patterns = {
+            'node_modules',
+            '.git',
+            'target',
+            'dist',
+          },
+          cache_picker = {
+            num_pickers = 5,
+            limit_entries = 1000,
+          },
         },
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
@@ -593,7 +616,20 @@ require('lazy').setup({
         -- pickers = {}
         pickers = {
           find_files = {
-            find_command = { 'rg', '--ignore', '--files', '--smart-case' },
+            find_command = {
+              'rg',
+              '--files',
+              '--hidden',
+              '--glob',
+              '!**/.git/*',
+              '--glob',
+              '!**/node_modules/*',
+              '--glob',
+              '!**/dist/*',
+              '--glob',
+              '!**/target/*',
+              '--smart-case',
+            },
           },
         },
         extensions = {
@@ -923,9 +959,9 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettier', stop_after_first = true },
+        typescript = { 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettier', stop_after_first = true },
         rust = { 'rustfmt', lsp_format = 'fallback' },
         html = { 'prettierd', 'prettier', stop_after_first = true },
         markdown = { 'prettierd', 'prettier', stop_after_first = true },
