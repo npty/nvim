@@ -921,13 +921,45 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         ts_ls = {},
 
+        solidity_ls = {},
+
+        pyright = {
+          settings = {
+            python = {
+              analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode = 'workspace',
+                -- Configure Python path to your system-wide Python
+                pythonPath = '/usr/bin/python3',
+                -- Diagnostic settings
+                diagnosticSeverityOverrides = {
+                  reportMissingImports = 'warning',
+                  reportMissingModuleSource = 'warning',
+                },
+              },
+            },
+          },
+        },
+
+        move_analyzer = {},
+
         eslint = {},
 
         tailwindcss = {},
 
         jsonls = {},
 
-        cssls = {},
+        cssls = {
+          settings = {
+            css = {
+              validate = true,
+              lint = {
+                unknownAtRules = 'ignore',
+              },
+            },
+          },
+        },
 
         marksman = {},
 
@@ -1011,10 +1043,10 @@ require('lazy').setup({
         typescript = { 'prettier', stop_after_first = true },
         typescriptreact = { 'prettier', stop_after_first = true },
         rust = { 'rustfmt', lsp_format = 'fallback' },
-        html = { 'prettierd', 'prettier', stop_after_first = true },
-        markdown = { 'prettierd', 'prettier', stop_after_first = true },
-        yaml = { 'prettierd', 'prettier', stop_after_first = true },
-        json = { 'prettierd', 'prettier', stop_after_first = true },
+        html = { 'prettier', stop_after_first = true },
+        markdown = { 'prettier', stop_after_first = true },
+        yaml = { 'prettier', stop_after_first = true },
+        json = { 'prettier', stop_after_first = true },
         shell = { 'shfmt', lsp_format = 'fallback' },
 
         -- Conform can also run multiple formatters sequentially
@@ -1331,6 +1363,9 @@ vim.opt.termguicolors = true
 
 -- empty setup using defaults
 require('nvim-tree').setup {
+  view = {
+    width = 50,
+  },
   update_focused_file = {
     enable = true,
     update_cwd = true,
@@ -1615,3 +1650,7 @@ vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
 
 -- Twilight
 vim.api.nvim_set_keymap('n', '<leader>tw', ':Twilight<CR>', { noremap = true, silent = true })
+
+-- Set the keymaps with larger resize steps
+vim.api.nvim_set_keymap('n', '<C-w>>', '10<C-w>>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<C-w><', '10<C-w><', { noremap = true })
