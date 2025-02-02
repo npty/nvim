@@ -242,14 +242,12 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-rhubarb',
   'tpope/vim-fugitive',
   'tpope/vim-markdown',
   'sheerun/vim-polyglot',
   'ojroques/vim-oscyank',
   'rust-lang/rust.vim',
   'gpanders/editorconfig.nvim',
-  'tmux-plugins/vim-tmux',
   'nvim-pack/nvim-spectre',
   'prettier/vim-prettier',
   -- 'github/copilot.vim',
@@ -292,6 +290,98 @@ require('lazy').setup({
         desc = 'Quickfix List (Trouble)',
       },
     },
+  },
+
+  { -- Treesitter textobjects for better code navigation
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ['af'] = '@function.outer',
+              ['if'] = '@function.inner',
+              ['ac'] = '@class.outer',
+              ['ic'] = '@class.inner',
+              ['as'] = '@statement.outer',
+              ['is'] = '@statement.inner',
+            },
+          },
+          move = {
+            enable = true,
+            set_jumps = true,
+            goto_next_start = {
+              [']f'] = '@function.outer',
+              [']c'] = '@class.outer',
+            },
+            goto_previous_start = {
+              ['[f'] = '@function.outer',
+              ['[c'] = '@class.outer',
+            },
+          },
+        },
+      }
+    end,
+  },
+
+  { -- Enhanced UI for messages, cmdline and popups
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
+    opts = {
+      lsp = {
+        override = {
+          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+          ['vim.lsp.util.stylize_markdown'] = true,
+        },
+      },
+      presets = {
+        bottom_search = true,
+        command_palette = true,
+        long_message_to_split = true,
+      },
+    },
+  },
+
+  { -- Show code context at the top of the buffer
+    'nvim-treesitter/nvim-treesitter-context',
+    event = 'BufReadPre',
+    config = function()
+      require('treesitter-context').setup {
+        enable = true,
+        max_lines = 3,
+        patterns = {
+          default = {
+            'class',
+            'function',
+            'method',
+            'for',
+            'while',
+            'if',
+            'switch',
+            'case',
+          },
+          typescript = {
+            'class_declaration',
+            'abstract_class_declaration',
+            'interface_declaration',
+            'function_declaration',
+          },
+          rust = {
+            'impl_item',
+            'struct',
+            'enum',
+            'function',
+          },
+        },
+      }
+    end,
   },
   -- Add code companions for deepseek
   {
@@ -508,12 +598,29 @@ require('lazy').setup({
         -- optional
         api_key_name = 'DEEPSEEK_API_KEY', -- default OPENAI_API_KEY if not set
       },
+      vendors = {
+        groq = {
+          __inherited_from = 'openai',
+          api_key_name = 'GROQ_API_KEY',
+          endpoint = 'https://api.groq.com/openai/v1/',
+          model = 'deepseek-r1-distill-llama-70b',
+        },
+      },
+      mappings = {
+        ask = '<leader>a',
+      },
     },
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'stevearc/dressing.nvim',
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
+      'echasnovski/mini.pick', -- for file_selector provider mini.pick
+      'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
+      'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+      'ibhagwan/fzf-lua', -- for file_selector provider fzf
+      'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
+      'zbirenbaum/copilot.lua', -- for providers='copilot'
     },
   },
 
@@ -539,6 +646,59 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      on_attach = function(bufnr)
+        local gs = package.loaded.gitsigns
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            return ']c'
+          end
+          vim.schedule(function()
+            gs.next_hunk()
+          end)
+          return '<Ignore>'
+        end, { expr = true })
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            return '[c'
+          end
+          vim.schedule(function()
+            gs.prev_hunk()
+          end)
+          return '<Ignore>'
+        end, { expr = true })
+
+        -- Actions
+        map('n', '<leader>hs', gs.stage_hunk, { desc = 'Stage Hunk' })
+        map('n', '<leader>hr', gs.reset_hunk, { desc = 'Reset Hunk' })
+        map('v', '<leader>hs', function()
+          gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'Stage Hunk' })
+        map('v', '<leader>hr', function()
+          gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'Reset Hunk' })
+        map('n', '<leader>hS', gs.stage_buffer, { desc = 'Stage Buffer' })
+        map('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'Undo Stage Hunk' })
+        map('n', '<leader>hR', gs.reset_buffer, { desc = 'Reset Buffer' })
+        map('n', '<leader>hp', gs.preview_hunk, { desc = 'Preview Hunk' })
+        map('n', '<leader>hb', function()
+          gs.blame_line { full = true }
+        end, { desc = 'Blame Line' })
+        map('n', '<leader>tb', gs.toggle_current_line_blame, { desc = 'Toggle Line Blame' })
+        map('n', '<leader>hd', gs.diffthis, { desc = 'Diff This' })
+        map('n', '<leader>hD', function()
+          gs.diffthis '~'
+        end, { desc = 'Diff This ~' })
+        map('n', '<leader>td', gs.toggle_deleted, { desc = 'Toggle Deleted' })
+      end,
     },
   },
 
@@ -1308,9 +1468,11 @@ require('lazy').setup({
         'bash',
         'javascript',
         'typescript',
+        'tsx',
         'json',
         'rust',
-        'c',
+        'solidity',
+        'toml',
         'diff',
         'html',
         'lua',
@@ -1684,7 +1846,7 @@ require('aerial').setup {
   end,
 }
 -- You probably also want to set a keymap to toggle aerial
-vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
+vim.keymap.set('n', '<leader>l', '<cmd>AerialToggle!<CR>')
 
 -- Twilight
 vim.api.nvim_set_keymap('n', '<leader>tw', ':Twilight<CR>', { noremap = true, silent = true })
@@ -1692,3 +1854,12 @@ vim.api.nvim_set_keymap('n', '<leader>tw', ':Twilight<CR>', { noremap = true, si
 -- Set the keymaps with larger resize steps
 vim.api.nvim_set_keymap('n', '<C-w>>', '10<C-w>>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<C-w><', '10<C-w><', { noremap = true })
+
+-- Noice history
+vim.keymap.set('n', '<leader>nh', ':Noice history<CR>', { desc = 'Noice History' })
+vim.keymap.set('n', '<leader>nd', ':Noice dismiss<CR>', { desc = 'Dismiss All' })
+
+-- Treesitter context
+vim.keymap.set('n', '[c', function()
+  require('treesitter-context').go_to_context()
+end, { silent = true, desc = 'Go to context' })
