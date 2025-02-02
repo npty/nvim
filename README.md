@@ -20,6 +20,35 @@ A modern Neovim configuration optimized for TypeScript and blockchain developmen
 - ripgrep (for Telescope file searching)
 - A Nerd Font (recommended for icons)
 
+## 🔒 Environment Variables
+
+This configuration uses several environment variables for API keys and secrets. Create a `.env` file in your Neovim config directory and add your keys:
+
+### Required Environment Variables
+
+| Variable           | Description                      | Used By                         |
+| ------------------ | -------------------------------- | ------------------------------- |
+| `DEEPSEEK_API_KEY` | API key for DeepSeek AI services | avante.nvim, codecompanion.nvim |
+
+### Optional Environment Variables
+
+| Variable         | Description                          | Default |
+| ---------------- | ------------------------------------ | ------- |
+| `TSS_MAX_MEMORY` | Maximum memory for TypeScript server | 4096    |
+
+### Loading Environment Variables
+
+1. Create a `.env` file in your Neovim config directory
+2. Add your environment variables
+3. Use one of these methods to load them:
+
+#### Option 1: Direct in Shell
+
+```bash
+export DEEPSEEK_API_KEY="your-key-here"
+nvim
+```
+
 ## 🔧 Installation
 
 1. Backup your existing Neovim configuration:
