@@ -592,58 +592,32 @@ require('lazy').setup({
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
-      require('which-key').setup {
-        icons = {
-          -- set icon mappings to true if you have a Nerd Font
-          mappings = vim.g.have_nerd_font,
-          -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
-          -- default whick-key.nvim defined Nerd Font icons, otherwise define a string table
-          keys = vim.g.have_nerd_font and {} or {
-            Up = '<Up> ',
-            Down = '<Down> ',
-            Left = '<Left> ',
-            Right = '<Right> ',
-            C = '<C-…> ',
-            M = '<M-…> ',
-            D = '<D-…> ',
-            S = '<S-…> ',
-            CR = '<CR> ',
-            Esc = '<Esc> ',
-            ScrollWheelDown = '<ScrollWheelDown> ',
-            ScrollWheelUp = '<ScrollWheelUp> ',
-            NL = '<NL> ',
-            BS = '<BS> ',
-            Space = '<Space> ',
-            Tab = '<Tab> ',
-            F1 = '<F1>',
-            F2 = '<F2>',
-            F3 = '<F3>',
-            F4 = '<F4>',
-            F5 = '<F5>',
-            F6 = '<F6>',
-            F7 = '<F7>',
-            F8 = '<F8>',
-            F9 = '<F9>',
-            F10 = '<F10>',
-            F11 = '<F11>',
-            F12 = '<F12>',
-          },
-        },
-      }
 
-      -- Document existing key chains
-      require('which-key').add {
-        { '<leader>c', group = '[C]ode' },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-      }
-    end,
+    event = 'VeryLazy',
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+    keys = {
+      {
+        '<leader>?',
+        function()
+          require('which-key').show { global = false }
+        end,
+        desc = 'Buffer Local Keymaps (which-key)',
+      },
+    },
+    -- Document existing key chains
+    require('which-key').add {
+      { '<leader>c', group = '[C]ode' },
+      { '<leader>d', group = '[D]ocument' },
+      { '<leader>r', group = '[R]ename' },
+      { '<leader>s', group = '[S]earch' },
+      { '<leader>w', group = '[W]orkspace' },
+      { '<leader>t', group = '[T]oggle' },
+      { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+    },
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -1068,6 +1042,8 @@ require('lazy').setup({
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
+        ensure_installed = ensure_installed,
+        automatic_installation = true,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
