@@ -65,7 +65,6 @@ vim.opt.updatetime = 500
 vim.opt.timeoutlen = 500
 vim.opt.redrawtime = 1500
 vim.opt.hidden = true
-vim.opt.lazyredraw = true
 vim.opt.wildignore = vim.opt.wildignore + {
   '*/node_modules/*',
   '*/.git/*',
@@ -607,16 +606,6 @@ require('lazy').setup({
         end,
         desc = 'Buffer Local Keymaps (which-key)',
       },
-    },
-    -- Document existing key chains
-    require('which-key').add {
-      { '<leader>c', group = '[C]ode' },
-      { '<leader>d', group = '[D]ocument' },
-      { '<leader>r', group = '[R]ename' },
-      { '<leader>s', group = '[S]earch' },
-      { '<leader>w', group = '[W]orkspace' },
-      { '<leader>t', group = '[T]oggle' },
-      { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
     },
   },
 
