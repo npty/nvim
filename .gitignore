@@ -1,8 +1,21 @@
-tags
-test.sh
-.luarc.json
-nvim
-
-spell/
+# Generated files
+doc/tags
+doc/kickstart.txt
 lazy-lock.json
+
+# Plugin directory
+pack/
+
+# Environment directory
 env/
+
+# Neovim data files
+.netrwhist
+*.log
+
+# Environment specific
+.env
+
+# System specific
+.DS_Store
+Thumbs.db
