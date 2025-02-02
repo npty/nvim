@@ -463,51 +463,6 @@ require('lazy').setup({
     end,
   },
   {
-    'robitx/gp.nvim',
-    config = function()
-      local conf = {
-        -- For customization, refer to Install > Configuration in the Documentation/Readme
-        providers = {
-          ollama = {
-            endpoint = 'https://ollama.europarkland.online/v1/chat/completions',
-            model = 'llama3.1',
-          },
-          googleai = {
-            endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/{{model}}:streamGenerateContent?key={{secret}}',
-            secret = os.getenv 'GOOGLEAI_API_KEY',
-            model = os.getenv 'GOOGLEAI_MODEL',
-          },
-        },
-        agents = {
-          {
-            name = 'Llama 3.1 70b',
-            provider = 'ollama',
-            chat = true,
-            command = false,
-            model = { model = 'llama3.1:70b' },
-            system_prompt = 'You are a helpful assistant.',
-          },
-        },
-      }
-      require('gp').setup(conf)
-
-      -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
-    end,
-  },
-  {
-    'epwalsh/pomo.nvim',
-    version = '*', -- Recommended, use latest release instead of latest commit
-    lazy = true,
-    cmd = { 'TimerStart', 'TimerRepeat', 'TimerSession' },
-    dependencies = {
-      -- Optional, but highly recommended if you want to use the "Default" timer
-      'rcarriga/nvim-notify',
-    },
-    opts = {
-      -- See below for full list of options 👇
-    },
-  },
-  {
     'pwntester/octo.nvim',
     requires = {
       'nvim-lua/plenary.nvim',
