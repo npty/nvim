@@ -453,13 +453,29 @@ require('lazy').setup({
   },
   {
     'yetone/avante.nvim',
-    event = 'VeryLazy',
     build = 'make',
     lazy = false,
     version = false,
+    init = function()
+      -- Set up highlights
+      vim.api.nvim_set_hl(0, 'MiniPickNormal', { link = 'Normal' })
+      vim.api.nvim_set_hl(0, 'MiniPickMatchCurrent', { bg = '#3c3836', fg = '#ebdbb2' })
+      vim.api.nvim_set_hl(0, 'MiniPickPrompt', { link = 'Title' })
+      vim.api.nvim_set_hl(0, 'MiniPickBorder', { link = 'FloatBorder' })
+      vim.api.nvim_set_hl(0, 'MiniPickPreview', { link = 'NormalFloat' })
+      vim.api.nvim_set_hl(0, 'MiniPickSelection', { bg = '#504945' })
+    end,
     opts = {
       -- add any opts here
       provider = 'openai',
+      file_selector = {
+        provider = 'mini.pick',
+        mini_pick = {
+          options = {
+            use_icons = true,
+          },
+        },
+      },
       auto_suggestions_provider = 'openai', -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
       openai = {
         endpoint = 'https://api.deepseek.com/v1',
@@ -490,9 +506,16 @@ require('lazy').setup({
       'echasnovski/mini.pick', -- for file_selector provider mini.pick
       'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
       'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
-      'ibhagwan/fzf-lua', -- for file_selector provider fzf
       'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
       'zbirenbaum/copilot.lua', -- for providers='copilot'
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { 'markdown', 'Avante' },
+        },
+        ft = { 'markdown', 'Avante' },
+      },
     },
   },
 
@@ -1024,12 +1047,7 @@ require('lazy').setup({
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
-        'prettierd',
-      })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
       require('mason-lspconfig').setup {
         ensure_installed = ensure_installed,
         automatic_installation = true,
