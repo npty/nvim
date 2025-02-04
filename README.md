@@ -18,6 +18,7 @@ A modern Neovim configuration optimized for TypeScript and blockchain developmen
 - Git
 - Node.js (for TypeScript/JavaScript LSP)
 - ripgrep (for Telescope file searching)
+- fd (for Telescope file searching)
 - A Nerd Font (recommended for icons)
 
 ## 🔒 Environment Variables
