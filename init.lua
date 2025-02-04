@@ -263,6 +263,14 @@ require('lazy').setup({
         command_palette = true,
         long_message_to_split = true,
       },
+      notify = {
+        -- Set notify as the backend for vim.notify
+        enabled = true,
+        view = 'notify',
+        opts = {
+          background_colour = '#000000',
+        },
+      },
     },
   },
 
@@ -493,9 +501,6 @@ require('lazy').setup({
           endpoint = 'https://api.groq.com/openai/v1/',
           model = 'deepseek-r1-distill-llama-70b',
         },
-      },
-      mappings = {
-        ask = '<leader>a',
       },
     },
     dependencies = {
