@@ -1708,6 +1708,12 @@ require('aerial').setup {
     vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
   end,
 }
+
+require('notify').setup {
+  background_colour = '#000000',
+  merge_duplicates = true,
+}
+
 -- You probably also want to set a keymap to toggle aerial
 vim.keymap.set('n', '<leader>l', '<cmd>AerialToggle!<CR>')
 
