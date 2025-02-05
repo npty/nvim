@@ -1714,6 +1714,50 @@ require('notify').setup {
   merge_duplicates = true,
 }
 
+require('nvim-tree').setup {
+  view = {
+    width = 50,
+  },
+  update_focused_file = {
+    enable = true,
+    update_cwd = true,
+  },
+  diagnostics = {
+    enable = true,
+    show_on_dirs = true,
+    icons = {
+      hint = '',
+      info = '',
+      warning = '',
+      error = '',
+    },
+  },
+  on_attach = function(bufnr)
+    local api = require 'nvim-tree.api'
+
+    local function opts(desc)
+      return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    end
+
+    -- Default mappings
+    api.config.mappings.default_on_attach(bufnr)
+
+    -- Custom mappings
+    vim.keymap.set('n', 'c', api.fs.copy.node, opts 'Copy')
+    vim.keymap.set('n', 'x', api.fs.cut, opts 'Cut')
+    vim.keymap.set('n', 'p', api.fs.paste, opts 'Paste')
+    vim.keymap.set('n', 'y', api.fs.copy.filename, opts 'Copy Name')
+    vim.keymap.set('n', 'Y', api.fs.copy.relative_path, opts 'Copy Relative Path')
+    vim.keymap.set('n', 'gy', api.fs.copy.absolute_path, opts 'Copy Absolute Path')
+  end,
+}
+
+-- Clear notifications
+vim.keymap.set('n', '<leader>nd', function()
+  require('notify').dismiss() -- Clear notify notifications
+  vim.cmd 'Noice dismiss' -- Clear noice notifications
+end, { desc = 'Clear notifications' })
+
 -- You probably also want to set a keymap to toggle aerial
 vim.keymap.set('n', '<leader>l', '<cmd>AerialToggle!<CR>')
 
