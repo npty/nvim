@@ -161,6 +161,12 @@ This document provides a comprehensive list of all keybindings in the Neovim con
 | ------------ | ---- | ------------------- |
 | `<leader>nd` | N    | Clear notifications |
 
+### Theme Switcher
+
+| Keybinding   | Mode | Description         |
+| ------------ | ---- | ------------------- |
+| `<leader>th` | N    | Toggle theme        |
+
 ## Mode Legend
 
 - N: Normal mode

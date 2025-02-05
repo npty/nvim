@@ -741,6 +741,9 @@ require('lazy').setup({
               '--smart-case',
             },
           },
+          colorscheme = {
+            enable_preview = true,
+          },
         },
         extensions = {
           ['ui-select'] = {
@@ -1268,17 +1271,9 @@ require('lazy').setup({
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      -- vim.cmd.colorscheme 'tokyonight-night'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
+    lazy = false,
   },
-  { 'diegoulloao/neofusion.nvim', priority = 1000, config = true },
+  { 'diegoulloao/neofusion.nvim', priority = 1000, config = true, lazy = false },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -1614,7 +1609,7 @@ vim.keymap.set('n', '<leader>A', '<cmd>set foldmethod?^foldmethod<CR>', { desc =
 vim.g.rust_fold = 1
 
 -- color scheme
-vim.cmd.colorscheme 'neofusion'
+vim.cmd.colorscheme 'tokyonight-storm'
 
 --- 'enable modeline'
 vim.opt.modeline = true
@@ -1771,6 +1766,9 @@ vim.api.nvim_set_keymap('n', '<C-w><', '10<C-w><', { noremap = true })
 -- Noice history
 vim.keymap.set('n', '<leader>nh', ':Noice history<CR>', { desc = 'Noice History' })
 vim.keymap.set('n', '<leader>nd', ':Noice dismiss<CR>', { desc = 'Dismiss All' })
+
+-- Theme switcher
+vim.keymap.set('n', '<leader>th', '<cmd>Telescope colorscheme enable_preview=true<CR>', { desc = 'Theme switcher' })
 
 -- Treesitter context
 vim.keymap.set('n', '[c', function()
