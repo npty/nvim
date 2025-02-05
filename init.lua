@@ -1273,7 +1273,16 @@ require('lazy').setup({
     priority = 1000, -- Make sure to load this before all the other start plugins.
     lazy = false,
   },
-  { 'diegoulloao/neofusion.nvim', priority = 1000, config = true, lazy = false },
+  {
+    'diegoulloao/neofusion.nvim',
+    priority = 1000,
+    config = true,
+    lazy = false,
+    opts = {
+      -- disable the default background
+      transparent_mode = true,
+    },
+  },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
