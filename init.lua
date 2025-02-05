@@ -1609,7 +1609,8 @@ vim.keymap.set('n', '<leader>A', '<cmd>set foldmethod?^foldmethod<CR>', { desc =
 vim.g.rust_fold = 1
 
 -- color scheme
-vim.cmd.colorscheme 'tokyonight-storm'
+vim.o.background = 'dark'
+vim.cmd.colorscheme 'neofusion'
 
 --- 'enable modeline'
 vim.opt.modeline = true
