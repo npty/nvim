@@ -155,6 +155,12 @@ This document provides a comprehensive list of all keybindings in the Neovim con
 | `<leader>cc` | N    | Yank line      |
 | `<leader>c`  | V    | Yank selection |
 
+### Nvim Notify
+
+| Keybinding   | Mode | Description         |
+| ------------ | ---- | ------------------- |
+| `<leader>nd` | N    | Clear notifications |
+
 ## Mode Legend
 
 - N: Normal mode
