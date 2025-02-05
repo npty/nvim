@@ -1754,7 +1754,7 @@ require('nvim-tree').setup {
 
 -- Clear notifications
 vim.keymap.set('n', '<leader>nd', function()
-  require('notify').dismiss() -- Clear notify notifications
+  require('notify').dismiss { silent = true, pending = true }
   vim.cmd 'Noice dismiss' -- Clear noice notifications
 end, { desc = 'Clear notifications' })
 
