@@ -1319,6 +1319,25 @@ require('lazy').setup({
         return '%2l:%-2v'
       end
 
+      -- Calculate dimensions and position for center placement
+      local height = math.floor(vim.o.lines * 0.7)
+      local width = math.floor(vim.o.columns * 0.7)
+      local row = math.floor((vim.o.lines - height) / 2)
+      local col = math.floor((vim.o.columns - width) / 2)
+
+      require('mini.pick').setup {
+        -- Optional configuration
+        window = {
+          config = {
+            height = height,
+            width = width,
+            row = row,
+            col = col,
+            border = 'rounded', -- optional: adds a rounded border
+          },
+        },
+      }
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
