@@ -2,6 +2,8 @@
 require('custom.env').load_env()
 local env = require 'custom.env'
 
+vim.env.MYVIMRC = vim.fn.expand '~/.config/nvim/init.lua'
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -475,7 +477,7 @@ require('lazy').setup({
     end,
     opts = {
       -- add any opts here
-      provider = 'openai',
+      provider = 'gemini',
       file_selector = {
         provider = 'mini.pick',
         mini_pick = {
@@ -493,6 +495,11 @@ require('lazy').setup({
         max_tokens = 4096,
         -- optional
         api_key_name = 'DEEPSEEK_API_KEY', -- default OPENAI_API_KEY if not set
+      },
+      gemini = {
+        api_key_name = 'GOOGLEAI_API_KEY',
+        model = 'gemini-2.0-pro-exp-02-05',
+        temperature = 0,
       },
       vendors = {
         groq = {
@@ -709,6 +716,10 @@ require('lazy').setup({
             '.git',
             'target',
             'dist',
+            '%.svg$',
+            -- Matches JSON files that have "cache" anywhere in the name
+            '.*cache.*%.json$',
+            '%.lock$',
           },
           cache_picker = {
             num_pickers = 5,
@@ -1803,3 +1814,6 @@ vim.keymap.set('n', '<leader>th', '<cmd>Telescope colorscheme enable_preview=tru
 vim.keymap.set('n', '[c', function()
   require('treesitter-context').go_to_context()
 end, { silent = true, desc = 'Go to context' })
+
+-- Reload nvim config
+vim.keymap.set('n', '<leader>sr', ':Lazy reload *<CR>', { silent = true, desc = 'Reload config' })
