@@ -3,10 +3,9 @@ local env = require 'custom.env'
 env.load_env()
 env.check_required_env()
 
-vim.env.MYVIMRC = vim.fn.expand '~/.config/nvim/init.lua'
-
 require 'config.options'
 
+vim.env.MYVIMRC = vim.fn.expand '~/.config/nvim/init.lua'
 -- Limit the size of typescript server
 vim.env.TSS_MAX_MEMORY = env.get_env 'TSS_MAX_MEMORY' or '4096'
 
@@ -30,17 +29,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
---    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
---  To update plugins you can run
---    :Lazy update
---
--- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- Plugins that should load regardless of environment
   { import = 'user.plugins_always' },
@@ -62,8 +50,6 @@ require('lazy').setup({
   },
 }, {
   ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
       cmd = '⌘',
       config = '🛠',
@@ -99,16 +85,3 @@ require('config.keymaps').setup()
 
 -- Support code snippet for markdown
 vim.g.markdown_fenced_languages = { 'json', 'javascript', 'typescript', 'rust', 'bash=sh' }
-
--- Toggle Completion
-local cmp_toggle_flag = true
-function _G.toggle_completion()
-  if cmp_toggle_flag then
-    require('cmp').setup.buffer { enabled = false }
-    print 'Completion disabled'
-  else
-    require('cmp').setup.buffer { enabled = true }
-    print 'Completion enabled'
-  end
-  cmp_toggle_flag = not cmp_toggle_flag
-end
