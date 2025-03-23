@@ -162,7 +162,18 @@ require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-fugitive',
+  'tpope/vim-rhubarb',
   'tpope/vim-markdown',
+  'tpope/vim-obsession',
+  {
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      'rcarriga/nvim-dap-ui',
+      'nvim-neotest/nvim-nio',
+      'theHamsta/nvim-dap-virtual-text',
+      'mxsdev/nvim-dap-vscode-js', -- For JavaScript/TypeScript
+    },
+  },
   'sheerun/vim-polyglot',
   'ojroques/vim-oscyank',
   'rust-lang/rust.vim',
@@ -1688,6 +1699,19 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    -- Wait a short time for all plugins to initialize
+    vim.defer_fn(function()
+      -- Unmap the existing keybinding (silent to avoid errors if it doesn't exist)
+      pcall(vim.api.nvim_del_keymap, 'n', '<leader>ac')
+
+      -- Create our custom mapping
+      vim.api.nvim_set_keymap('n', '<leader>ac', ':AvanteClear<CR>', { noremap = true, silent = true, desc = 'Clear Avante conversation' })
+    end, 300) -- Increased delay to ensure all plugins have loaded
+  end,
+})
+
 -- Reload nvim config
 function ReloadConfig()
   -- Clear and reload all Lua modules
@@ -1817,3 +1841,7 @@ end, { silent = true, desc = 'Go to context' })
 
 -- Reload nvim config
 vim.keymap.set('n', '<leader>sr', ':Lazy reload *<CR>', { silent = true, desc = 'Reload config' })
+
+-- Avante
+vim.api.nvim_set_keymap('n', '<leader>aX', ':AC<CR>', { noremap = true, silent = true, desc = 'Clear Avante conversation' })
+
