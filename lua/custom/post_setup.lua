@@ -512,6 +512,57 @@ function M.setup()
       vim.keymap.set('n', 'gy', api.fs.copy.absolute_path, opts 'Copy Absolute Path')
     end,
   }
+
+  -- Setup Nvim CMP
+  local cmp = require 'cmp'
+  local luasnip = require 'luasnip'
+  luasnip.config.setup {} -- Explicitly initialize LuaSnip
+
+  cmp.setup {
+    snippet = {
+      expand = function(args)
+        require('luasnip').lsp_expand(args.body)
+      end,
+    },
+    completion = {
+      completeopt = 'menu,menuone,noinsert', -- Restore noinsert behavior
+    },
+    mapping = cmp.mapping.preset.insert {
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm { select = true },
+      ['<Tab>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif require('luasnip').expand_or_jumpable() then
+          require('luasnip').expand_or_jump()
+        else
+          fallback()
+        end
+      end, { 'i', 's' }),
+      ['<S-Tab>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif require('luasnip').jumpable(-1) then
+          require('luasnip').jump(-1)
+        else
+          fallback()
+        end
+      end, { 'i', 's' }),
+      -- To use <C-n> and <C-p> like your old config:
+      -- ['<C-n>'] = cmp.mapping.select_next_item(),
+      -- ['<C-p>'] = cmp.mapping.select_prev_item(),
+    },
+    sources = cmp.config.sources {
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' },
+      { name = 'buffer' },
+      { name = 'path' },
+      { name = 'supermaven' }, -- Add back supermaven
+    },
+  }
 end
 
 return M
