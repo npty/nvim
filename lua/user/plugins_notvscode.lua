@@ -1,0 +1,389 @@
+-- ~/.config/nvim/lua/user/plugins_notvscode.lua
+-- Plugins for regular Neovim only (not in VSCode)
+--
+require('./custom.env').load_env()
+
+return {
+  -- UI enhancements (only make sense in regular Neovim)
+  {
+    'folke/tokyonight.nvim',
+    priority = 1000,
+    lazy = false,
+  },
+  {
+    'diegoulloao/neofusion.nvim',
+    priority = 1000,
+    config = true,
+    lazy = false,
+    opts = {
+      transparent_mode = true,
+    },
+  },
+
+  -- Status line (doesn't work in VSCode)
+  {
+    'echasnovski/mini.nvim',
+    config = function()
+      -- Additional mini modules for non-VSCode environment
+      local statusline = require 'mini.statusline'
+      statusline.setup { use_icons = vim.g.have_nerd_font }
+
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_location = function()
+        return '%2l:%-2v'
+      end
+
+      -- Mini pick for file selection
+      local height = math.floor(vim.o.lines * 0.7)
+      local width = math.floor(vim.o.columns * 0.7)
+      local row = math.floor((vim.o.lines - height) / 2)
+      local col = math.floor((vim.o.columns - width) / 2)
+
+      require('mini.pick').setup {
+        window = {
+          config = {
+            height = height,
+            width = width,
+            row = row,
+            col = col,
+            border = 'rounded',
+          },
+        },
+      }
+    end,
+  },
+
+  -- File explorer and navigation
+  'nvim-tree/nvim-tree.lua',
+
+  -- LSP and completion (doesn't make sense in VSCode)
+  {
+    'neovim/nvim-lspconfig',
+    dependencies = {
+      { 'williamboman/mason.nvim', config = true },
+      'williamboman/mason-lspconfig.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      { 'j-hui/fidget.nvim', opts = {} },
+      'hrsh7th/cmp-nvim-lsp',
+    },
+  },
+
+  -- Auto-completion
+  {
+    'hrsh7th/nvim-cmp',
+    event = 'InsertEnter',
+    dependencies = {
+      'L3MON4D3/LuaSnip',
+      'saadparwaiz1/cmp_luasnip',
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-path',
+    },
+  },
+
+  -- Formatting
+  {
+    'stevearc/conform.nvim',
+    event = { 'BufWritePre' },
+    cmd = { 'ConformInfo' },
+    keys = {
+      {
+        '<leader>f',
+        function()
+          require('conform').format { async = true, lsp_fallback = true }
+        end,
+        mode = '',
+        desc = '[F]ormat buffer',
+      },
+    },
+    opts = {
+      notify_on_error = false,
+      format_on_save = function(bufnr)
+        -- Disable "format_on_save lsp_fallback" for languages that don't
+        -- have a well standardized coding style. You can add additional
+        -- languages here or re-enable it for the disabled ones.
+        local disable_filetypes = { c = true, cpp = true }
+        return {
+          timeout_ms = 500,
+          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+        }
+      end,
+      formatters_by_ft = {
+        lua = { 'stylua' },
+        javascript = { 'prettier', stop_after_first = true },
+        typescript = { 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettier', stop_after_first = true },
+        rust = { 'rustfmt', lsp_format = 'fallback' },
+        html = { 'prettier', stop_after_first = true },
+        markdown = { 'prettier', stop_after_first = true },
+        yaml = { 'prettier', stop_after_first = true },
+        json = { 'prettier', stop_after_first = true },
+        shell = { 'shfmt', lsp_format = 'fallback' },
+
+        -- Conform can also run multiple formatters sequentially
+        python = { 'isort', 'black' },
+        --
+        -- You can use 'stop_after_first' to run the first available formatter from the list
+        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      },
+      formatters = {
+        prettier = {
+          -- This tells prettier to look for a local config file
+          prepend_args = { '--config-precedence', 'prefer-file' },
+          cwd = function(ctx)
+            return vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h')
+          end,
+        },
+        injected = {
+          options = {
+            -- Set individual option values
+            ignore_errors = true,
+            lang_to_ext = {
+              bash = 'sh',
+              json = 'json',
+              javascript = 'js',
+              markdown = 'md',
+              python = 'py',
+              rust = 'rs',
+              typescript = 'ts',
+              typescriptreact = 'tsx',
+            },
+            lang_to_formatters = {},
+          },
+        },
+      },
+    },
+  },
+
+  -- Telescope for fuzzy finding (UI-dependent)
+  {
+    'nvim-telescope/telescope.nvim',
+    event = 'VimEnter',
+    branch = '0.1.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+      { 'nvim-telescope/telescope-ui-select.nvim' },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+    },
+  },
+
+  -- Debugging tools
+  {
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      'rcarriga/nvim-dap-ui',
+      'nvim-neotest/nvim-nio',
+      'theHamsta/nvim-dap-virtual-text',
+      'mxsdev/nvim-dap-vscode-js',
+    },
+  },
+
+  -- UI enhancements
+  {
+    'folke/trouble.nvim',
+    opts = {},
+    cmd = 'Trouble',
+  },
+
+  -- Enhanced UI for messages, cmdline and popups
+  {
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
+  },
+
+  -- Git integration
+  {
+    'lewis6991/gitsigns.nvim',
+    opts = {
+      signs = {
+        add = { text = '+' },
+        change = { text = '~' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+    },
+  },
+
+  -- Code context at the top of the buffer
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    event = 'BufReadPre',
+  },
+
+  -- Terminal integration
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    config = true,
+    opts = {
+      open_mapping = [[<c-\>]],
+      shade_terminals = true,
+      shading_factor = -80,
+      float_opts = {
+        border = 'curved',
+        winblend = 3,
+        highlights = {
+          border = 'Normal',
+          background = 'NormalFloat',
+        },
+      },
+    },
+  },
+
+  -- Which key to show keybindings
+  {
+    'folke/which-key.nvim',
+    event = 'VeryLazy',
+    opts = {},
+  },
+
+  -- Code AI tools
+  {
+    'yetone/avante.nvim',
+    build = 'make',
+    lazy = false,
+    version = false,
+    opts = {
+      provider = 'gemini',
+      file_selector = {
+        provider = 'mini.pick',
+        mini_pick = {
+          options = {
+            use_icons = true,
+          },
+        },
+      },
+      auto_suggestions_provider = 'openai',
+      openai = {
+        endpoint = 'https://api.deepseek.com/v1',
+        model = 'deepseek-chat',
+        timeout = 30000,
+        temperature = 0,
+        max_tokens = 4096,
+        api_key_name = 'DEEPSEEK_API_KEY',
+      },
+      gemini = {
+        api_key_name = 'GOOGLEAI_API_KEY',
+        model = 'gemini-2.0-pro-exp-02-05',
+        temperature = 0,
+      },
+    },
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      'stevearc/dressing.nvim',
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      'echasnovski/mini.pick',
+      'nvim-telescope/telescope.nvim',
+      'hrsh7th/nvim-cmp',
+      'zbirenbaum/copilot.lua',
+      {
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { 'markdown', 'Avante' },
+        },
+        ft = { 'markdown', 'Avante' },
+      },
+    },
+  },
+
+  -- Code companions
+  {
+    'olimorris/codecompanion.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+  },
+
+  -- Visual tools
+  {
+    'folke/twilight.nvim',
+    opts = {},
+  },
+
+  -- Code outline
+  {
+    'stevearc/aerial.nvim',
+    opts = {},
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+    },
+  },
+
+  -- Marks navigation
+  {
+    'chentoast/marks.nvim',
+    event = 'VeryLazy',
+    opts = {},
+  },
+
+  -- Github integration
+  {
+    'pwntester/octo.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+  },
+
+  -- LeetCode practice
+  {
+    'kawre/leetcode.nvim',
+    build = ':TSUpdate html',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'rcarriga/nvim-notify',
+      'nvim-tree/nvim-web-devicons',
+    },
+    opts = {
+      lang = 'typescript',
+    },
+  },
+
+  -- Code completion
+  'supermaven-inc/supermaven-nvim',
+
+  -- Search and replace
+  'nvim-pack/nvim-spectre',
+
+  -- Prettier formatting
+  'prettier/vim-prettier',
+
+  -- Git diff viewer
+  'sindrets/diffview.nvim',
+
+  -- Vim game to practice movement
+  'ThePrimeagen/vim-be-good',
+
+  -- Tmux integration
+  'aserowy/tmux.nvim',
+
+  -- Lua development
+  {
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    opts = {
+      library = {
+        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
+      },
+    },
+  },
+  { 'Bilal2453/luvit-meta', lazy = true },
+
+  -- Todo comments
+  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+
+  -- Session management
+  'tpope/vim-obsession',
+}
