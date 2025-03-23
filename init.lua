@@ -1,7 +1,7 @@
 -- Load environment variables
-require('custom.env').load_env()
-require('custom.env').check_required_env()
 local env = require 'custom.env'
+env.load_env()
+env.check_required_env()
 
 vim.env.MYVIMRC = vim.fn.expand '~/.config/nvim/init.lua'
 
