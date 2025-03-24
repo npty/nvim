@@ -13,6 +13,7 @@ return {
 
   -- Minimal text editing enhancements that don't require UI
   'windwp/nvim-autopairs', -- Auto-pair brackets, quotes, etc.
+  'wakatime/vim-wakatime',
 
   -- Mini.nvim modules that are useful in any environment
   {

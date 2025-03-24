@@ -245,6 +245,9 @@ function M.setup()
   vim.keymap.set('n', '<leader>dg', function()
     Snacks.picker.git_diff()
   end, { desc = 'Git Diff (Hunks)' })
+  vim.keymap.set('n', '<leader>gl', function()
+    Snacks.picker.git_log()
+  end, { desc = 'Git Log' })
 
   -- Slightly advanced example - current buffer search
   vim.keymap.set('n', '<leader>/', function()
