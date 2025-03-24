@@ -114,21 +114,6 @@ function M.setup()
     { noremap = true, silent = true }
   )
 
-  -- Clear notifications (Original Notify/Noice version)
-  vim.keymap.set('n', '<leader>nd', function()
-    -- Check if notify is available before trying to use it
-    local ok, notify = pcall(require, 'notify')
-    if ok then
-      notify.dismiss { silent = true, pending = true }
-    end
-
-    -- Check if noice is available before trying to use it
-    local noice_ok, _ = pcall(require, 'noice')
-    if noice_ok then
-      vim.cmd 'Noice dismiss' -- Clear noice notifications
-    end
-  end, { desc = 'Clear notifications (legacy)' })
-
   -- ========================================
   -- Snacks.notifier Keymaps
   -- ========================================
@@ -142,7 +127,7 @@ function M.setup()
     end, { desc = '[N]otification [H]istory' })
 
     -- Clear all notifications (overrides the Noice dismiss)
-    vim.keymap.set('n', '<leader>nc', function()
+    vim.keymap.set('n', '<leader>nd', function()
       -- Loop through all active notifications and hide them
       local history = snacks.notifier.get_history()
       for _, notif in ipairs(history) do
@@ -150,7 +135,7 @@ function M.setup()
           snacks.notifier.hide(notif.id)
         end
       end
-    end, { desc = '[N]otification [C]lear All' })
+    end, { desc = '[N]otification [D]ismiss All' })
 
     -- Filter notifications by level
     vim.keymap.set('n', '<leader>ne', function()
