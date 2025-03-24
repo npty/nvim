@@ -1,6 +1,8 @@
 -- user/plugins_always.lua
 -- Plugins that should load in both regular Neovim and VSCode
 
+vim.g.polyglot_disabled = { 'sleuth' }
+
 return {
   -- Core plugins that enhance Vim functionality in any environment
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
@@ -62,9 +64,6 @@ return {
   -- Other always-loaded plugins from your config
   {
     'sheerun/vim-polyglot',
-    init = function()
-      vim.g.polyglot_disabled = { 'sleuth' }
-    end,
   },
   'ojroques/vim-oscyank',
   'rust-lang/rust.vim',
