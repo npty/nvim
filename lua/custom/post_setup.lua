@@ -55,6 +55,11 @@ function M.setup()
   }
 
   require('nvim-treesitter.configs').setup {
+    modules = {},
+    sync_install = false,
+    ignore_install = {},
+    auto_install = true,
+    ensure_installed = { 'lua', 'typescript', 'javascript' },
     textobjects = {
       select = {
         enable = true,
@@ -86,26 +91,26 @@ function M.setup()
   require('tmux').setup()
 
   -- Configure Noice
-  require('noice').setup {
-    lsp = {
-      override = {
-        ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-        ['vim.lsp.util.stylize_markdown'] = true,
-      },
-    },
-    presets = {
-      bottom_search = true,
-      command_palette = true,
-      long_message_to_split = true,
-    },
-    notify = {
-      enabled = true,
-      view = 'notify',
-      opts = {
-        background_colour = '#000000',
-      },
-    },
-  }
+  -- require('noice').setup {
+  --   lsp = {
+  --     override = {
+  --       ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+  --       ['vim.lsp.util.stylize_markdown'] = true,
+  --     },
+  --   },
+  --   presets = {
+  --     bottom_search = true,
+  --     command_palette = true,
+  --     long_message_to_split = true,
+  --   },
+  --   notify = {
+  --     enabled = true,
+  --     view = 'notify',
+  --     opts = {
+  --       background_colour = '#000000',
+  --     },
+  --   },
+  -- }
 
   -- empty setup using defaults
   require('nvim-tree').setup {
