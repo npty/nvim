@@ -34,6 +34,44 @@ function M.setup()
   -- Insert mode escape
   vim.api.nvim_set_keymap('i', 'jk', '<Esc>', { noremap = true, silent = true })
 
+  -- Trouble keymaps
+  local trouble_keys = {
+    {
+      '<leader>xx',
+      '<cmd>Trouble diagnostics toggle<cr>',
+      desc = 'Diagnostics (Trouble)',
+    },
+    {
+      '<leader>xX',
+      '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
+      desc = 'Buffer Diagnostics (Trouble)',
+    },
+    {
+      '<leader>cs',
+      '<cmd>Trouble symbols toggle focus=false<cr>',
+      desc = 'Symbols (Trouble)',
+    },
+    {
+      '<leader>cl',
+      '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
+      desc = 'LSP Definitions / references / ... (Trouble)',
+    },
+    {
+      '<leader>xL',
+      '<cmd>Trouble loclist toggle<cr>',
+      desc = 'Location List (Trouble)',
+    },
+    {
+      '<leader>xQ',
+      '<cmd>Trouble qflist toggle<cr>',
+      desc = 'Quickfix List (Trouble)',
+    },
+  }
+
+  for _, keymap in ipairs(trouble_keys) do
+    vim.keymap.set('n', keymap[1], keymap[2], { desc = keymap.desc })
+  end
+
   -- Git browser
   vim.api.nvim_set_keymap('n', '<leader>gh', ':GBrowse<CR>', { noremap = true, silent = true })
 
@@ -117,18 +155,6 @@ function M.setup()
       snacks.notifier.show_history { filter = 'warn' }
     end, { desc = '[N]otification [W]arnings Only' })
 
-    -- Toggle between different notification styles
-    vim.keymap.set('n', '<leader>ns', function()
-      local styles = { 'compact', 'fancy', 'minimal' }
-      local current = snacks.notifier.config.style or 'compact'
-      local next_index = (table.concat(styles, ','):find(current) % #styles) + 1
-      local next_style = styles[next_index]
-
-      snacks.notifier.notify('Notification style changed to ' .. next_style, 'info', { title = 'Style Change' })
-
-      snacks.notifier.config.style = next_style
-    end, { desc = '[N]otification Change [S]tyle' })
-
     -- Create a test notification (useful for testing styles)
     vim.keymap.set('n', '<leader>nt', function()
       snacks.notifier.notify("This is a test notification with ID 'test'", 'info', {
@@ -157,8 +183,8 @@ function M.setup()
   vim.api.nvim_set_keymap('n', '<C-w><', '10<C-w><', { noremap = true })
 
   -- Noice history
-  vim.keymap.set('n', '<leader>nh', ':Noice history<CR>', { desc = 'Noice History' })
-  vim.keymap.set('n', '<leader>nd', ':Noice dismiss<CR>', { desc = 'Dismiss All' })
+  -- vim.keymap.set('n', '<leader>nh', ':Noice history<CR>', { desc = 'Noice History' })
+  -- vim.keymap.set('n', '<leader>nd', ':Noice dismiss<CR>', { desc = 'Dismiss All' })
 
   -- Theme switcher
   vim.keymap.set('n', '<leader>th', '<cmd>Telescope colorscheme enable_preview=true<CR>', { desc = 'Theme switcher' })
