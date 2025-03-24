@@ -5,7 +5,7 @@ vim.g.polyglot_disabled = { 'sleuth' }
 
 return {
   -- Core plugins that enhance Vim functionality in any environment
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-fugitive', -- Git integration
   'tpope/vim-rhubarb', -- GitHub integration
 
