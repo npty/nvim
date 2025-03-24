@@ -20,6 +20,17 @@ return {
     },
   },
 
+  {
+    'folke/snacks.nvim',
+    opts = {
+      notifier = {
+        -- your notifier configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      },
+    },
+  },
+
   -- Status line (doesn't work in VSCode)
   {
     'echasnovski/mini.nvim',
@@ -186,14 +197,14 @@ return {
   },
 
   -- Enhanced UI for messages, cmdline and popups
-  {
-    'folke/noice.nvim',
-    event = 'VeryLazy',
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'rcarriga/nvim-notify',
-    },
-  },
+  -- {
+  --   'folke/noice.nvim',
+  --   event = 'VeryLazy',
+  --   dependencies = {
+  --     'MunifTanjim/nui.nvim',
+  --     'rcarriga/nvim-notify',
+  --   },
+  -- },
 
   -- Git integration
   {

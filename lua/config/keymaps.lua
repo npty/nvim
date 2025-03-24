@@ -70,11 +70,81 @@ function M.setup()
     { noremap = true, silent = true }
   )
 
-  -- Clear notifications
+  -- Clear notifications (Original Notify/Noice version)
   vim.keymap.set('n', '<leader>nd', function()
-    require('notify').dismiss { silent = true, pending = true }
-    vim.cmd 'Noice dismiss' -- Clear noice notifications
-  end, { desc = 'Clear notifications' })
+    -- Check if notify is available before trying to use it
+    local ok, notify = pcall(require, 'notify')
+    if ok then
+      notify.dismiss { silent = true, pending = true }
+    end
+
+    -- Check if noice is available before trying to use it
+    local noice_ok, _ = pcall(require, 'noice')
+    if noice_ok then
+      vim.cmd 'Noice dismiss' -- Clear noice notifications
+    end
+  end, { desc = 'Clear notifications (legacy)' })
+
+  -- ========================================
+  -- Snacks.notifier Keymaps
+  -- ========================================
+
+  -- Check if Snacks.notifier is available
+  local snacks_available, snacks = pcall(require, 'snacks')
+  if snacks_available then
+    -- Show notification history (overrides Noice history)
+    vim.keymap.set('n', '<leader>nh', function()
+      snacks.notifier.show_history()
+    end, { desc = '[N]otification [H]istory' })
+
+    -- Clear all notifications (overrides the Noice dismiss)
+    vim.keymap.set('n', '<leader>nc', function()
+      -- Loop through all active notifications and hide them
+      local history = snacks.notifier.get_history()
+      for _, notif in ipairs(history) do
+        if not notif.hidden then
+          snacks.notifier.hide(notif.id)
+        end
+      end
+    end, { desc = '[N]otification [C]lear All' })
+
+    -- Filter notifications by level
+    vim.keymap.set('n', '<leader>ne', function()
+      snacks.notifier.show_history { filter = 'error' }
+    end, { desc = '[N]otification [E]rrors Only' })
+
+    vim.keymap.set('n', '<leader>nw', function()
+      snacks.notifier.show_history { filter = 'warn' }
+    end, { desc = '[N]otification [W]arnings Only' })
+
+    -- Toggle between different notification styles
+    vim.keymap.set('n', '<leader>ns', function()
+      local styles = { 'compact', 'fancy', 'minimal' }
+      local current = snacks.notifier.config.style or 'compact'
+      local next_index = (table.concat(styles, ','):find(current) % #styles) + 1
+      local next_style = styles[next_index]
+
+      snacks.notifier.notify('Notification style changed to ' .. next_style, 'info', { title = 'Style Change' })
+
+      snacks.notifier.config.style = next_style
+    end, { desc = '[N]otification Change [S]tyle' })
+
+    -- Create a test notification (useful for testing styles)
+    vim.keymap.set('n', '<leader>nt', function()
+      snacks.notifier.notify("This is a test notification with ID 'test'", 'info', {
+        title = 'Test Notification',
+        id = 'test',
+      })
+    end, { desc = '[N]otification [T]est' })
+
+    -- Update the test notification (demonstrates replacing notifications)
+    vim.keymap.set('n', '<leader>nu', function()
+      snacks.notifier.notify('This notification replaced the previous test notification', 'warn', {
+        title = 'Updated Notification',
+        id = 'test', -- Same ID as the test notification to replace it
+      })
+    end, { desc = '[N]otification [U]pdate Test' })
+  end
 
   -- Toggle aerial
   vim.keymap.set('n', '<leader>l', '<cmd>AerialToggle!<CR>')
