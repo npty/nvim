@@ -22,7 +22,13 @@ function M.setup()
   vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
   -- NvimTree Toggle
-  vim.api.nvim_set_keymap('n', '<C-m>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-m>', function()
+    Snacks.explorer()
+  end, { desc = 'Toggle Explorer' })
+  -- Open explorer focused on current file
+  vim.keymap.set('n', '<leader>E', function()
+    Snacks.explorer.reveal()
+  end, { desc = 'Explorer (Current File)' })
 
   -- Split management
   vim.api.nvim_set_keymap('n', '<leader>vs', ':vsplit<CR>', { noremap = true, silent = true })
@@ -218,6 +224,145 @@ function M.setup()
   -- Auto suggestion function signature
   vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { silent = true })
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { silent = true })
+
+  -- Snacks picker
+  --
+  vim.keymap.set('n', '<leader>sh', function()
+    Snacks.picker.help()
+  end, { desc = '[S]earch [H]elp' })
+  vim.keymap.set('n', '<leader>sk', function()
+    Snacks.picker.keymaps()
+  end, { desc = '[S]earch [K]eymaps' })
+  vim.keymap.set('n', '<leader>sf', function()
+    Snacks.picker.files()
+  end, { desc = '[S]earch [F]iles' })
+  vim.keymap.set('n', '<leader>ss', function()
+    Snacks.picker.pickers()
+  end, { desc = '[S]earch [S]elect Pickers' })
+  vim.keymap.set('n', '<leader>sw', function()
+    Snacks.picker.grep_word()
+  end, { desc = '[S]earch current [W]ord' })
+  vim.keymap.set('n', '<leader>sg', function()
+    Snacks.picker.grep { live = true }
+  end, { desc = '[S]earch by [G]rep' })
+  vim.keymap.set('n', '<leader>sd', function()
+    Snacks.picker.diagnostics()
+  end, { desc = '[S]earch [D]iagnostics' })
+  vim.keymap.set('n', '<leader>sr', function()
+    Snacks.picker.resume()
+  end, { desc = '[S]earch [R]esume' })
+  vim.keymap.set('n', '<leader>rf.', function()
+    Snacks.picker.recent()
+  end, { desc = '[S]earch Recent Files ("." for repeat)' })
+  vim.keymap.set('n', '<leader><leader>', function()
+    Snacks.picker.buffers()
+  end, { desc = '[ ] Find existing buffers' })
+  vim.keymap.set('n', '<leader>dg', function()
+    Snacks.picker.git_diff()
+  end, { desc = 'Git Diff (Hunks)' })
+
+  -- Slightly advanced example - current buffer search
+  vim.keymap.set('n', '<leader>/', function()
+    -- Snacks implementation of current buffer fuzzy find
+    Snacks.picker.lines {
+      layout = {
+        preset = 'vscode', -- similar to dropdown in telescope
+      },
+    }
+  end, { desc = '[/] Fuzzily search in current buffer' })
+
+  -- Searching in open files
+  vim.keymap.set('n', '<leader>s/', function()
+    Snacks.picker.grep_buffers {
+      prompt = 'Live Grep in Open Files', -- equivalent to prompt_title
+    }
+  end, { desc = '[S]earch [/] in Open Files' })
+
+  -- LSP KEYBINDINGS
+  -- This function will be used in your LspAttach autocmd
+  local function setup_lsp_keymaps(event)
+    local map = function(keys, func, desc)
+      vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+    end
+
+    -- Replace Telescope LSP functions with Snacks
+    map('gd', function()
+      -- Configure lsp_definitions to immediately jump when there's only one result
+      Snacks.picker.lsp_definitions {
+        unique_lines = true,
+      }
+    end, '[G]oto [D]efinition')
+    map('gr', function()
+      Snacks.picker.lsp_references()
+    end, '[G]oto [R]eferences')
+    map('gI', function()
+      Snacks.picker.lsp_implementations()
+    end, '[G]oto [I]mplementation')
+    map('<leader>D', function()
+      Snacks.picker.lsp_type_definitions()
+    end, 'Type [D]efinition')
+    map('<leader>ds', function()
+      Snacks.picker.lsp_symbols()
+    end, '[D]ocument [S]ymbols')
+    map('<leader>ws', function()
+      Snacks.picker.lsp_workspace_symbols()
+    end, '[W]orkspace [S]ymbols')
+
+    -- Keep the same non-picker LSP bindings
+    map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+    map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+    map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+    -- Keep the rest of your LSP setup (document highlighting, etc.)
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+      local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+        buffer = event.buf,
+        group = highlight_augroup,
+        callback = vim.lsp.buf.document_highlight,
+      })
+
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+        buffer = event.buf,
+        group = highlight_augroup,
+        callback = vim.lsp.buf.clear_references,
+      })
+
+      vim.api.nvim_create_autocmd('LspDetach', {
+        group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+        callback = function(event2)
+          vim.lsp.buf.clear_references()
+          vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+        end,
+      })
+    end
+
+    -- Toggle inlay hints
+    if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+      map('<leader>th', function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+      end, '[T]oggle Inlay [H]ints')
+    end
+  end
+
+  -- Use this function in your LspAttach autocmd to set up the keymaps:
+  --
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+    callback = setup_lsp_keymaps,
+  })
+
+  -- Additional useful Snacks keymaps you might want to add:
+  vim.keymap.set('n', '<leader>u', function()
+    Snacks.picker.undo()
+  end, { desc = 'Undo History' })
+  vim.keymap.set('n', '<leader>m', function()
+    Snacks.picker.marks()
+  end, { desc = 'Jump to Mark' })
+  vim.keymap.set('n', '<leader>gb', function()
+    Snacks.picker.git_branches()
+  end, { desc = 'Git Branches' })
 end
 
 return M

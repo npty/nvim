@@ -24,7 +24,111 @@ return {
     'folke/snacks.nvim',
     opts = {
       notifier = {},
-      picker = {},
+      picker = {
+        sources = {
+          files = {
+            ignored = true, -- Show ignored files (false by default)
+            hidden = true, -- Show hidden files
+            exclude = {
+              'node_modules',
+              '.git',
+              'target',
+              'dist',
+              '%.svg$',
+              '.*cache.*%.json$',
+              '%.lock$',
+            },
+          },
+          grep = {
+            -- Configure grep to match your telescope vimgrep_arguments
+            args = {
+              '--color=never',
+              '--ignore',
+              '--no-heading',
+              '--with-filename',
+              '--smart-case',
+              '--line-number',
+              '--column',
+            },
+          },
+          explorer = {
+            tree = true, -- Show files in a tree view
+            watch = true, -- Watch for file changes
+            diagnostics = true, -- Show diagnostics
+            git_status = true, -- Show git status
+            git_untracked = true, -- Show untracked files
+            -- UI configuration
+            focus = 'list', -- Focus the file list instead of the input when opening
+            auto_close = false, -- Don't auto-close when focusing another window
+            jump = { close = false }, -- Don't close explorer when jumping to a file
+            -- Format configuration
+            formatters = {
+              file = { filename_only = true }, -- Only show filename, not full path
+              severity = { pos = 'right' }, -- Show diagnostics on the right
+            },
+            -- Filtering & sorting
+            matcher = {
+              sort_empty = false, -- Don't sort when filter is empty
+              fuzzy = false, -- Don't use fuzzy matching
+            },
+            -- Layout configuration
+            layout = {
+              preset = 'sidebar', -- Use sidebar layout
+              preview = false, -- Don't show preview initially
+            },
+            -- Key mappings for the explorer
+            win = {
+              list = {
+                keys = {
+                  -- Navigation
+                  ['<BS>'] = 'explorer_up', -- Go up a directory
+                  ['l'] = 'confirm', -- Open file/directory
+                  ['h'] = 'explorer_close', -- Close directory
+                  ['.'] = 'explorer_focus', -- Focus current file in explorer
+                  -- File operations
+                  ['a'] = 'explorer_add', -- Add new file/directory
+                  ['d'] = 'explorer_del', -- Delete file/directory
+                  ['r'] = 'explorer_rename', -- Rename file/directory
+                  ['c'] = 'explorer_copy', -- Copy file
+                  ['m'] = 'explorer_move', -- Move file
+                  ['o'] = 'explorer_open', -- Open with system application
+                  ['P'] = 'toggle_preview', -- Toggle preview
+                  ['y'] = { 'explorer_yank', mode = { 'n', 'x' } }, -- Yank filepath
+                  ['p'] = 'explorer_paste', -- Paste file
+                  ['u'] = 'explorer_update', -- Update/refresh view
+                  -- Navigation and filters
+                  ['<c-c>'] = 'tcd', -- Change directory
+                  ['<leader>/'] = 'picker_grep', -- Grep in directory
+                  ['<c-t>'] = 'terminal', -- Open terminal in directory
+                  ['I'] = 'toggle_ignored', -- Toggle ignored files
+                  ['H'] = 'toggle_hidden', -- Toggle hidden files
+                  ['Z'] = 'explorer_close_all', -- Close all directories
+                  -- Diagnostics & git navigation
+                  [']g'] = 'explorer_git_next', -- Next git change
+                  ['[g'] = 'explorer_git_prev', -- Previous git change
+                  [']d'] = 'explorer_diagnostic_next', -- Next diagnostic
+                  ['[d'] = 'explorer_diagnostic_prev', -- Previous diagnostic
+                },
+              },
+            },
+          },
+        },
+        -- Use vim.ui.select implementation
+        ui_select = true,
+
+        -- Configure the fuzzy matching
+        matcher = {
+          fuzzy = true,
+          smartcase = true,
+          ignorecase = true,
+          sort_empty = true,
+          filename_bonus = true,
+          cwd_bonus = true,
+        },
+      },
+      explorer = {
+        replace_netrw = true,
+      },
     },
   },
 
@@ -62,7 +166,7 @@ return {
   },
 
   -- File explorer and navigation
-  'nvim-tree/nvim-tree.lua',
+  -- 'nvim-tree/nvim-tree.lua',
 
   -- LSP and completion (doesn't make sense in VSCode)
   {
@@ -163,17 +267,17 @@ return {
   },
 
   -- Telescope for fuzzy finding (UI-dependent)
-  {
-    'nvim-telescope/telescope.nvim',
-    event = 'VimEnter',
-    branch = '0.1.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-      { 'nvim-telescope/telescope-ui-select.nvim' },
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
-    },
-  },
+  -- {
+  --   'nvim-telescope/telescope.nvim',
+  --   event = 'VimEnter',
+  --   branch = '0.1.x',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+  --     { 'nvim-telescope/telescope-ui-select.nvim' },
+  --     { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+  --   },
+  -- },
 
   -- Debugging tools
   {
