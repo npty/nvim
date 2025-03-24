@@ -60,7 +60,12 @@ return {
   },
 
   -- Other always-loaded plugins from your config
-  'sheerun/vim-polyglot',
+  {
+    'sheerun/vim-polyglot',
+    init = function()
+      vim.g.polyglot_disabled = { 'sleuth' }
+    end,
+  },
   'ojroques/vim-oscyank',
   'rust-lang/rust.vim',
   '0xmovses/move.vim',
