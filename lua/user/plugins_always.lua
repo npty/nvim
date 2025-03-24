@@ -1,8 +1,6 @@
 -- user/plugins_always.lua
 -- Plugins that should load in both regular Neovim and VSCode
 
-vim.g.polyglot_disabled = { 'sleuth' }
-
 return {
   -- Core plugins that enhance Vim functionality in any environment
   -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
