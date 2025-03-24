@@ -27,33 +27,36 @@ This document provides a comprehensive list of all keybindings in the Neovim con
 
 ## Navigation
 
-| Keybinding | Mode | Description                |
-| ---------- | ---- | -------------------------- |
-| `vif`      | N    | Select inside function     |
-| `vaf`      | N    | Select around function     |
-| `vic`      | N    | Select inside class        |
-| `vac`      | N    | Select around class        |
-| `]f`       | N    | Go to next function        |
-| `[f`       | N    | Go to previous function    |
-| `]c`       | N    | Go to next class           |
-| `[c`       | N    | Go to previous class       |
-| `}`        | N    | Next function (Aerial)     |
-| `{`        | N    | Previous function (Aerial) |
+| Keybinding  | Mode | Description                |
+| ----------- | ---- | -------------------------- |
+| `vif`       | N    | Select inside function     |
+| `vaf`       | N    | Select around function     |
+| `vic`       | N    | Select inside class        |
+| `vac`       | N    | Select around class        |
+| `]f`        | N    | Go to next function        |
+| `[f`        | N    | Go to previous function    |
+| `]c`        | N    | Go to next class           |
+| `[c`        | N    | Go to previous class       |
+| `<Esc>`     | n    | Clear highlights on search |
+| `}`         | N    | Next function (Aerial)     |
+| `{`         | N    | Previous function (Aerial) |
+| `<leader>E` | N    | Explorer (Current File)    |
 
 ## LSP
 
-| Keybinding   | Mode | Description              |
+o
+| Keybinding | Mode | Description |
 | ------------ | ---- | ------------------------ |
-| `gd`         | N    | Go to definition         |
-| `gr`         | N    | Find references          |
-| `gI`         | N    | Go to implementation     |
-| `<leader>D`  | N    | Type definition          |
-| `<leader>rn` | N    | Rename                   |
-| `<leader>ca` | N    | Code action              |
-| `K`          | N    | Show hover documentation |
-| `<C-k>`      | N/I  | Show signature help      |
-| `<leader>ds` | N    | Document symbols         |
-| `<leader>ws` | N    | Workspace symbols        |
+| `gd` | N | Go to definition |
+| `gr` | N | Find references |
+| `gI` | N | Go to implementation |
+| `<leader>D` | N | Type definition |
+| `<leader>rn` | N | Rename |
+| `<leader>ca` | N | Code action |
+| `K` | N | Show hover documentation |
+| `<C-k>` | N/I | Show signature help |
+| `<leader>ds` | N | Document symbols |
+| `<leader>ws` | N | Workspace symbols |
 
 ## Git
 
@@ -70,23 +73,33 @@ This document provides a comprehensive list of all keybindings in the Neovim con
 
 ## Files and Search
 
-| Keybinding   | Mode | Description          |
-| ------------ | ---- | -------------------- |
-| `<leader>sf` | N    | Search files         |
-| `<leader>sg` | N    | Live grep            |
-| `<leader>sd` | N    | Search diagnostics   |
-| `<leader>sh` | N    | Search help          |
-| `<leader>/`  | N    | Fuzzy find in buffer |
-| `<leader>s.` | N    | Search recent files  |
-| `<C-m>`      | N    | Toggle file tree     |
-| `<leader>sn` | N    | Search Neovim files  |
+| Keybinding         | Mode | Description               |
+| ------------------ | ---- | ------------------------- |
+| `<leader>sf`       | N    | Search files              |
+| `<leader>sg`       | N    | Live grep                 |
+| `<leader>sd`       | N    | Search diagnostics        |
+| `<leader>ss`       | N    | Search Select Pickers     |
+| `<leader>sw`       | N    | Search current Word       |
+| `<leader>rf`       | N    | Search Recent Files (".") |
+| `<leader><leader>` | N    | Find existing buffers     |
+| `<leader>dg`       | N    | Git Diff (Hunks)          |
+| `<leader>s/`       | N    | Search in Open Files      |
+| `<leader>sh`       | N    | Search help               |
+| `<leader>/`        | N    | Fuzzy find in buffer      |
+| `<leader>s.`       | N    | Search recent files       |
+| `<C-m>`            | N    | Toggle file tree          |
+| `<leader>sn`       | N    | Search Neovim files       |
 
 ## Terminal
 
-| Keybinding   | Mode | Description        |
-| ------------ | ---- | ------------------ |
-| `<C-\>`      | N    | Toggle terminal    |
-| `<Esc><Esc>` | T    | Exit terminal mode |
+| Keybinding   | Mode | Description            |
+| ------------ | ---- | ---------------------- |
+| `<C-\>`      | N    | Toggle terminal        |
+| `<Esc><Esc>` | T    | Exit terminal mode     |
+| `<left>`     | N    | echo "Use h to move!!" |
+| `<right>`    | N    | echo "Use l to move!!" |
+| `<up>`       | N    | echo "Use k to move!!" |
+| `<down>`     | N    | echo "Use j to move!!" |
 
 ## Code Actions
 
@@ -120,16 +133,6 @@ This document provides a comprehensive list of all keybindings in the Neovim con
 
 ## Plugin-Specific
 
-### Telescope
-
-| Keybinding   | Mode | Description        |
-| ------------ | ---- | ------------------ |
-| `<leader>sg` | N    | Live grep          |
-| `<leader>sf` | N    | Find files         |
-| `<leader>sr` | N    | Resume last search |
-| `<leader>sh` | N    | Search help        |
-| `<leader>sk` | N    | Search keymaps     |
-
 ### Trouble
 
 | Keybinding   | Mode | Description           |
@@ -139,14 +142,6 @@ This document provides a comprehensive list of all keybindings in the Neovim con
 | `<leader>xd` | N    | Document diagnostics  |
 | `<leader>xq` | N    | Quickfix list         |
 
-### CodeCompanion
-
-| Keybinding | Mode | Description |
-| ---------- | ---- | ----------- |
-| `<C-g>c`   | N/V  | New chat    |
-| `<C-g>t`   | N/V  | Toggle chat |
-| `<C-g>p`   | N/V  | Chat paste  |
-
 ### OSC Yank
 
 | Keybinding   | Mode | Description    |
@@ -155,17 +150,42 @@ This document provides a comprehensive list of all keybindings in the Neovim con
 | `<leader>cc` | N    | Yank line      |
 | `<leader>c`  | V    | Yank selection |
 
-### Nvim Notify
+### Snacks
 
-| Keybinding   | Mode | Description         |
-| ------------ | ---- | ------------------- |
-| `<leader>nd` | N    | Clear notifications |
+| Keybinding   | Mode | Description                         |
+| ------------ | ---- | ----------------------------------- |
+| `<leader>u`  | N    | Undo History                        |
+| `<leader>m`  | N    | Jump to Mark                        |
+| `<leader>gb` | N    | Git Branches                        |
+| `<leader>A`  | N    | set or clear the current foldmethod |
+
+### Snack Explorer
+
+| Keybinding   | Mode | Description        |
+| ------------ | ---- | ------------------ |
+| `<leader>sg` | N    | Live grep          |
+| `<leader>sf` | N    | Find files         |
+| `<leader>sr` | N    | Resume last search |
+| `<leader>sh` | N    | Search help        |
+| `<leader>sk` | N    | Search keymaps     |
+
+### Snack Notify
+
+| Keybinding   | Mode | Description                |
+| ------------ | ---- | -------------------------- |
+| `<leader>nd` | N    | Clear notifications        |
+| `<leader>ne` | N    | Notification Errors Only   |
+| `<leader>nw` | N    | Notification Warnings Only |
+| `<leader>nt` | N    | Notification Test          |
+| `<leader>nu` | N    | Notification Update Test   |
 
 ### Theme Switcher
 
-| Keybinding   | Mode | Description         |
-| ------------ | ---- | ------------------- |
-| `<leader>th` | N    | Toggle theme        |
+| Keybinding   | Mode | Description               |
+| ------------ | ---- | ------------------------- |
+| `<leader>th` | N    | Toggle theme              |
+| `<leader>sr` | N    | Reload config             |
+| `<leader>aX` | N    | Clear Avante conversation |
 
 ## Mode Legend
 
