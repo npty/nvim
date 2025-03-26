@@ -519,7 +519,7 @@ function M.setup()
       -- Select the [p]revious item
       ['<C-p>'] = cmp.mapping.select_prev_item(),
 
-      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-c>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
       ['<C-y>'] = cmp.mapping.confirm { select = true },
       ['<S-Tab>'] = cmp.mapping(function(fallback)
