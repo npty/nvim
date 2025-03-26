@@ -56,7 +56,7 @@ return {
             watch = true, -- Watch for file changes
             diagnostics = true, -- Show diagnostics
             git_status = true, -- Show git status
-            git_untracked = true, -- Show untracked files
+            git_untracked = false, -- Show untracked files
             -- UI configuration
             focus = 'list', -- Focus the file list instead of the input when opening
             auto_close = false, -- Don't auto-close when focusing another window
@@ -360,6 +360,14 @@ return {
     build = 'make',
     lazy = false,
     version = false,
+    init = function()
+      vim.api.nvim_set_hl(0, 'MiniPickNormal', { link = 'Normal' })
+      vim.api.nvim_set_hl(0, 'MiniPickMatchCurrent', { bg = '#3c3836', fg = '#ebdbb2' })
+      vim.api.nvim_set_hl(0, 'MiniPickPrompt', { link = 'Title' })
+      vim.api.nvim_set_hl(0, 'MiniPickBorder', { link = 'FloatBorder' })
+      vim.api.nvim_set_hl(0, 'MiniPickPreview', { link = 'NormalFloat' })
+      vim.api.nvim_set_hl(0, 'MiniPickSelection', { bg = '#504945' })
+    end,
     opts = {
       provider = 'gemini',
       file_selector = {

@@ -9,10 +9,24 @@ return {
 
   -- Navigation and editing improvements useful in any environment
   'gpanders/editorconfig.nvim', -- EditorConfig support
-  'kylechui/nvim-surround', -- Surround text objects
-
+  {
+    'kylechui/nvim-surround',
+    version = '*', -- Use for stability; omit to use `main` branch for the latest features
+    event = 'VeryLazy',
+    config = function()
+      require('nvim-surround').setup {
+        -- Configuration here, or leave empty to use defaults
+      }
+    end,
+  },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+    -- use opts = {} for passing setup options
+    -- this is equivalent to setup({}) function
+  },
   -- Minimal text editing enhancements that don't require UI
-  'windwp/nvim-autopairs', -- Auto-pair brackets, quotes, etc.
   'wakatime/vim-wakatime',
 
   -- Mini.nvim modules that are useful in any environment
