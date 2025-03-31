@@ -5,11 +5,11 @@ require('./custom.env').load_env()
 
 return {
   -- UI enhancements (only make sense in regular Neovim)
-  {
-    'folke/tokyonight.nvim',
-    priority = 1000,
-    lazy = false,
-  },
+  -- {
+  --   'folke/tokyonight.nvim',
+  --   priority = 1000,
+  --   lazy = false,
+  -- },
   {
     'diegoulloao/neofusion.nvim',
     priority = 1000,
