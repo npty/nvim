@@ -126,3 +126,8 @@ vim.g.clipboard = {
   },
   cache_enabled = true,
 }
+
+vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+  pattern = '*.move',
+  command = 'set filetype=move',
+})
