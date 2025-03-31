@@ -499,9 +499,6 @@ return {
   -- Search and replace
   'nvim-pack/nvim-spectre',
 
-  -- Prettier formatting
-  'prettier/vim-prettier',
-
   -- Git diff viewer
   'sindrets/diffview.nvim',
 
