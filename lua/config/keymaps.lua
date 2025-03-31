@@ -30,6 +30,21 @@ function M.setup()
     Snacks.explorer.reveal()
   end, { desc = 'Explorer (Current File)' })
 
+  -- Lazygit
+  vim.keymap.set('n', '<leader>gg', function()
+    Snacks.lazygit()
+  end, { desc = 'Toggle Lazygit' })
+
+  -- Terminal
+  vim.keymap.set('n', '<leader>tt', function()
+    Snacks.terminal()
+  end, { desc = 'Toggle Terminal' })
+
+  -- Git
+  vim.keymap.set('n', '<leader>bl', function()
+    Snacks.git.blame_line()
+  end, { desc = 'Git Blame Line' })
+
   -- Split management
   vim.api.nvim_set_keymap('n', '<leader>vs', ':vsplit<CR>', { noremap = true, silent = true })
   vim.api.nvim_set_keymap('n', '<leader>hs', ':split<CR>', { noremap = true, silent = true })
