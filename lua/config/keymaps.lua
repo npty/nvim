@@ -193,7 +193,7 @@ function M.setup()
   -- vim.keymap.set('n', '<leader>nd', ':Noice dismiss<CR>', { desc = 'Dismiss All' })
 
   -- Theme switcher
-  vim.keymap.set('n', '<leader>th', '<cmd>Telescope colorscheme enable_preview=true<CR>', { desc = 'Theme switcher' })
+  -- vim.keymap.set('n', '<leader>th', '<cmd>Telescope colorscheme enable_preview=true<CR>', { desc = 'Theme switcher' })
 
   -- Treesitter context
   vim.keymap.set('n', '[c', function()
@@ -202,10 +202,6 @@ function M.setup()
 
   -- Reload nvim config
   vim.keymap.set('n', '<leader>sr', ':Lazy reload *<CR>', { silent = true, desc = 'Reload config' })
-
-  -- Avante
-  vim.api.nvim_set_keymap('n', '<leader>aX', ':AC<CR>', { noremap = true, silent = true, desc = 'Clear Avante conversation' })
-  vim.api.nvim_set_keymap('n', '<leader>ac', ':AvanteClear<CR>', { noremap = true, silent = true, desc = 'Clear Avante conversation' })
 
   -- Nvim Spectre Keymaps
   vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', {
