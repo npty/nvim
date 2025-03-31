@@ -100,28 +100,6 @@ function M.setup()
 
   require('tmux').setup()
 
-  -- Configure Noice
-  -- require('noice').setup {
-  --   lsp = {
-  --     override = {
-  --       ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-  --       ['vim.lsp.util.stylize_markdown'] = true,
-  --     },
-  --   },
-  --   presets = {
-  --     bottom_search = true,
-  --     command_palette = true,
-  --     long_message_to_split = true,
-  --   },
-  --   notify = {
-  --     enabled = true,
-  --     view = 'notify',
-  --     opts = {
-  --       background_colour = '#000000',
-  --     },
-  --   },
-  -- }
-  --
   -- The following two autocommands are used to highlight references of the
   -- word under your cursor when your cursor rests there for a little while.
   --    See `:help CursorHold` for information about when this is executed
@@ -167,8 +145,9 @@ function M.setup()
   --  By default, Neovim doesn't support everything that is in the LSP specification.
   --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
   --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+  local original_capabilities = vim.lsp.protocol.make_client_capabilities()
+  local capabilities = require('blink.cmp').get_lsp_capabilities(original_capabilities)
+  -- capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
   -- Enable the following language servers
   --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -179,6 +158,21 @@ function M.setup()
   --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
   --  - settings (table): Override the default settings passed when initializing the server.
   --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
+  require('aerial').setup {
+    -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+    on_attach = function(bufnr)
+      -- Jump forwards/backwards with '{' and '}'
+      vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr })
+      vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
+    end,
+  }
+
+  require('notify').setup {
+    background_colour = '#000000',
+    merge_duplicates = true,
+  }
+
   local servers = {
     -- clangd = {},
     -- gopls = {},
@@ -250,12 +244,6 @@ function M.setup()
     },
   }
 
-  -- Ensure the servers and tools above are installed
-  --  To check the current status of installed tools and/or manually install
-  --  other tools, you can run
-  --    :Mason
-  --
-  --  You can press `g?` for help in this menu.
   require('mason').setup()
 
   -- You can add other tools here that you want Mason to install
@@ -274,110 +262,6 @@ function M.setup()
         server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
         require('lspconfig')[server_name].setup(server)
       end,
-    },
-  }
-
-  require('aerial').setup {
-    -- optionally use on_attach to set keymaps when aerial has attached to a buffer
-    on_attach = function(bufnr)
-      -- Jump forwards/backwards with '{' and '}'
-      vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr })
-      vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
-    end,
-  }
-
-  require('notify').setup {
-    background_colour = '#000000',
-    merge_duplicates = true,
-  }
-
-  -- require('nvim-tree').setup {
-  --   view = {
-  --     width = 50,
-  --   },
-  --   sort = {
-  --     sorter = 'case_sensitive',
-  --   },
-  --   renderer = {
-  --     group_empty = true,
-  --   },
-  --   update_focused_file = {
-  --     enable = true,
-  --     update_cwd = true,
-  --   },
-  --   diagnostics = {
-  --     enable = true,
-  --     show_on_dirs = true,
-  --     icons = {
-  --       hint = '',
-  --       info = '',
-  --       warning = '',
-  --       error = '',
-  --     },
-  --   },
-  --   on_attach = function(bufnr)
-  --     local api = require 'nvim-tree.api'
-  --
-  --     local function opts(desc)
-  --       return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-  --     end
-  --
-  --     -- Default mappings
-  --     api.config.mappings.default_on_attach(bufnr)
-  --
-  --     -- Custom mappings
-  --     vim.keymap.set('n', 'c', api.fs.copy.node, opts 'Copy')
-  --     vim.keymap.set('n', 'x', api.fs.cut, opts 'Cut')
-  --     vim.keymap.set('n', 'p', api.fs.paste, opts 'Paste')
-  --     vim.keymap.set('n', 'y', api.fs.copy.filename, opts 'Copy Name')
-  --     vim.keymap.set('n', 'Y', api.fs.copy.relative_path, opts 'Copy Relative Path')
-  --     vim.keymap.set('n', 'gy', api.fs.copy.absolute_path, opts 'Copy Absolute Path')
-  --   end,
-  -- }
-
-  -- Setup Nvim CMP
-  local cmp = require 'cmp'
-  local luasnip = require 'luasnip'
-  luasnip.config.setup {} -- Explicitly initialize LuaSnip
-
-  cmp.setup {
-    snippet = {
-      expand = function(args)
-        require('luasnip').lsp_expand(args.body)
-      end,
-    },
-    completion = {
-      completeopt = 'menu,menuone,noinsert', -- Restore noinsert behavior
-    },
-    mapping = cmp.mapping.preset.insert {
-      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-n>'] = cmp.mapping.select_next_item(),
-      -- Select the [p]revious item
-      ['<C-p>'] = cmp.mapping.select_prev_item(),
-
-      ['<C-c>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.abort(),
-      ['<C-y>'] = cmp.mapping.confirm { select = true },
-      ['<S-Tab>'] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-          cmp.select_prev_item()
-        elseif require('luasnip').jumpable(-1) then
-          require('luasnip').jump(-1)
-        else
-          fallback()
-        end
-      end, { 'i', 's' }),
-      -- To use <C-n> and <C-p> like your old config:
-      -- ['<C-n>'] = cmp.mapping.select_next_item(),
-      -- ['<C-p>'] = cmp.mapping.select_prev_item(),
-    },
-    sources = cmp.config.sources {
-      { name = 'nvim_lsp' },
-      { name = 'luasnip' },
-      { name = 'buffer' },
-      { name = 'path' },
-      { name = 'supermaven' }, -- Add back supermaven
     },
   }
 end
