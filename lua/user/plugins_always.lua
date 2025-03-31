@@ -35,7 +35,6 @@ return {
     config = function()
       -- Only load the modules that make sense in any environment
       require('mini.ai').setup { n_lines = 500 } -- Better text objects
-      require('mini.surround').setup() -- Surround functionality
     end,
   },
 
