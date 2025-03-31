@@ -96,20 +96,20 @@ function M.setup()
   -- Git browser
   vim.api.nvim_set_keymap('n', '<leader>gh', ':GBrowse<CR>', { noremap = true, silent = true })
 
-  -- Toggle completion
-  local cmp_toggle_flag = true
-  function _G.toggle_completion()
-    if cmp_toggle_flag then
-      require('cmp').setup.buffer { enabled = false }
-      print 'Completion disabled'
-    else
-      require('cmp').setup.buffer { enabled = true }
-      print 'Completion enabled'
-    end
-    cmp_toggle_flag = not cmp_toggle_flag
-  end
-  vim.api.nvim_set_keymap('n', '<leader>tc', ':lua toggle_completion()<CR>', { noremap = true, silent = true })
-
+  -- -- Toggle completion
+  -- local cmp_toggle_flag = true
+  -- function _G.toggle_completion()
+  --   if cmp_toggle_flag then
+  --     require('cmp').setup.buffer { enabled = false }
+  --     print 'Completion disabled'
+  --   else
+  --     require('cmp').setup.buffer { enabled = true }
+  --     print 'Completion enabled'
+  --   end
+  --   cmp_toggle_flag = not cmp_toggle_flag
+  -- end
+  -- vim.api.nvim_set_keymap('n', '<leader>tc', ':lua toggle_completion()<CR>', { noremap = true, silent = true })
+  --
   -- Toggle Diff View
   vim.api.nvim_set_keymap('n', '<leader>dv', ':DiffviewOpen<CR>', { noremap = true, silent = true })
 
