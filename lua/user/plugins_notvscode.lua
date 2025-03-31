@@ -129,6 +129,28 @@ return {
       explorer = {
         replace_netrw = true,
       },
+      -- scroll = {},
+      statuscolumn = {},
+      words = {},
+      git = {},
+      toggle = {},
+      terminal = {},
+      lazygit = {},
+      styles = {
+        terminal = {
+          keys = {
+            term_normal = {
+              '<esc>',
+              function(self)
+                vim.cmd 'stopinsert'
+              end,
+              mode = 't',
+              expr = false,
+              desc = 'Escape to normal mode',
+            },
+          },
+        },
+      },
     },
   },
 
@@ -389,7 +411,7 @@ return {
       },
       gemini = {
         api_key_name = 'GOOGLEAI_API_KEY',
-        model = 'gemini-2.0-pro-exp-02-05',
+        model = 'gemini-2.5-pro-exp-03-25',
         temperature = 0,
       },
     },
