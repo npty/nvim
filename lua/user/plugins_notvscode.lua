@@ -16,6 +16,9 @@ return {
     },
   },
 
+  -- Minimal text editing enhancements that don't require UI
+  'wakatime/vim-wakatime',
+
   {
     'folke/snacks.nvim',
     opts = {

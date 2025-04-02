@@ -26,9 +26,6 @@ return {
     -- use opts = {} for passing setup options
     -- this is equivalent to setup({}) function
   },
-  -- Minimal text editing enhancements that don't require UI
-  'wakatime/vim-wakatime',
-
   -- Mini.nvim modules that are useful in any environment
   {
     'echasnovski/mini.nvim',
