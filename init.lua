@@ -75,13 +75,13 @@ if not vim.g.vscode then
 
   -- Setup all plugins
   require('custom.post_setup').setup()
+
+  require('config.keymaps').setup()
 end
 
 if vim.g.vscode then
   require('custom.setup_vscode').setup()
 end
-
-require('config.keymaps').setup()
 
 -- Support code snippet for markdown
 vim.g.markdown_fenced_languages = { 'json', 'javascript', 'typescript', 'rust', 'bash=sh' }
