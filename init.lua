@@ -3,6 +3,12 @@ local env = require 'custom.env'
 env.load_env()
 env.check_required_env()
 
+-- Set <space> as the leader key
+-- See `:help mapleader`
+--  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 vim.env.MYVIMRC = vim.fn.expand '~/.config/nvim/init.lua'
 -- Limit the size of typescript server
 vim.env.TSS_MAX_MEMORY = env.get_env 'TSS_MAX_MEMORY' or '4096'
