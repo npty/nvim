@@ -504,8 +504,14 @@ return {
       'SupermavenUsePro',
     },
     opts = {
+      color = {
+        suggestion_color = '#C1FFC1',
+        cterm = 244,
+      },
       keymaps = {
         accept_suggestion = nil, -- handled by nvim-cmp / blink.cmp
+        clear_suggestion = '<C-]>',
+        accept_word = '<C-j>',
       },
       disable_inline_completion = vim.g.ai_cmp,
       ignore_filetypes = { 'bigfile', 'snacks_input', 'snacks_notif' },
@@ -619,5 +625,13 @@ return {
       fuzzy = { implementation = 'prefer_rust_with_warning' },
     },
     opts_extend = { 'sources.default' },
+  },
+
+  -- Custom highlight for Supermaven completion items
+  {
+    config = function()
+      vim.api.nvim_set_hl(0, 'CmpItemKindSupermaven', { fg = '#E6E6FA' })
+    end,
+    lazy = false, -- Ensure highlight is set early
   },
 }

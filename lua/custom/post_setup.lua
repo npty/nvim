@@ -16,19 +16,6 @@ function M.setup()
     },
   }
 
-  require('supermaven-nvim').setup {
-    color = {
-      suggestion_color = '#C1FFC1',
-      cterm = 244,
-    },
-    keymaps = {
-      accept_suggestion = '<Tab>',
-      clear_suggestion = '<C-]>',
-      accept_word = '<C-j>',
-    },
-  }
-  vim.api.nvim_set_hl(0, 'CmpItemKindSupermaven', { fg = '#E6E6FA' })
-
   -- Configure TreeSitter context
   require('treesitter-context').setup {
     enable = true,
