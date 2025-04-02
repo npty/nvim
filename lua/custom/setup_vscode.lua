@@ -277,7 +277,7 @@ function M.setup()
   vim.keymap.set({ 'n' }, '<leader>gg', git.graph)
 
   -- project
-  vim.keymap.set({ 'n' }, '<leader>pf', project.findFile)
+  vim.keymap.set({ 'n' }, '<leader>sf', project.findFile)
   vim.keymap.set({ 'n' }, '<leader>pp', project.switch)
   vim.keymap.set({ 'n' }, '<leader>pt', project.tree)
 
