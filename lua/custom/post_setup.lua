@@ -180,19 +180,35 @@ function M.setup()
   -- You can add other tools here that you want Mason to install
   -- for you, so that they are available from within Neovim.
   local ensure_installed = vim.tbl_keys(servers or {})
+  vim.list_extend(ensure_installed, {
+    -- Add other tools here like formatters, linters, debuggers
+    'stylua',
+    'prettier',
+    'shfmt',
+    'isort',
+    'black',
+    'rustfmt',
+    -- Add debug adapters if needed
+  })
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
   require('mason-lspconfig').setup {
-    ensure_installed = ensure_installed,
+    ensure_installed = vim.tbl_keys(servers or {}), -- Ensure only LSP servers from your list are managed here
     automatic_installation = true,
     handlers = {
       function(server_name)
         local server = servers[server_name] or {}
-        -- This handles overriding only values explicitly passed
-        -- by the server configuration above. Useful when disabling
-        -- certain features of an LSP (for example, turning off formatting for tsserver)
+        -- Merge capabilities correctly
         server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
         require('lspconfig')[server_name].setup(server)
       end,
+      -- You can add custom handlers for specific servers here if needed
+      -- For example:
+      -- lua_ls = function()
+      --   local server_opts = servers.lua_ls or {}
+      --   server_opts.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_opts.capabilities or {})
+      --   require('lspconfig').lua_ls.setup(server_opts)
+      -- end,
     },
   }
 end
