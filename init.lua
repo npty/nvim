@@ -3,8 +3,6 @@ local env = require 'custom.env'
 env.load_env()
 env.check_required_env()
 
-require 'config.options'
-
 vim.env.MYVIMRC = vim.fn.expand '~/.config/nvim/init.lua'
 -- Limit the size of typescript server
 vim.env.TSS_MAX_MEMORY = env.get_env 'TSS_MAX_MEMORY' or '4096'
@@ -70,6 +68,7 @@ require('lazy').setup({
 
 -- After lazy setup, configure plugins only outside VSCode
 if not vim.g.vscode then
+  require 'config.options'
   -- Set colorscheme
   vim.cmd.colorscheme 'neofusion'
 
