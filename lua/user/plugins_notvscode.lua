@@ -423,25 +423,15 @@ return {
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
       'echasnovski/mini.pick',
-      'nvim-telescope/telescope.nvim',
       'hrsh7th/nvim-cmp',
       'zbirenbaum/copilot.lua',
-      {
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { 'markdown', 'Avante' },
-        },
-        ft = { 'markdown', 'Avante' },
-      },
-    },
-  },
-
-  -- Code companions
-  {
-    'olimorris/codecompanion.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
+      -- {
+      --   'MeanderingProgrammer/render-markdown.nvim',
+      --   opts = {
+      --     file_types = { 'markdown', 'Avante' },
+      --   },
+      --   ft = { 'markdown', 'Avante' },
+      -- },
     },
   },
 
