@@ -489,6 +489,9 @@ return {
   {
     'supermaven-inc/supermaven-nvim',
     event = 'InsertEnter',
+    config = function()
+      vim.api.nvim_set_hl(0, 'CmpItemKindSupermaven', { fg = '#E6E6FA' })
+    end,
     cmd = {
       'SupermavenUseFree',
       'SupermavenUsePro',
@@ -615,13 +618,5 @@ return {
       fuzzy = { implementation = 'prefer_rust_with_warning' },
     },
     opts_extend = { 'sources.default' },
-  },
-
-  -- Custom highlight for Supermaven completion items
-  {
-    config = function()
-      vim.api.nvim_set_hl(0, 'CmpItemKindSupermaven', { fg = '#E6E6FA' })
-    end,
-    lazy = false, -- Ensure highlight is set early
   },
 }
