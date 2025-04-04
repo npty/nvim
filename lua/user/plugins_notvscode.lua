@@ -245,14 +245,14 @@ return {
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        javascript = { 'prettier', stop_after_first = true },
-        typescript = { 'prettier', stop_after_first = true },
-        typescriptreact = { 'prettier', stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         rust = { 'rustfmt', lsp_format = 'fallback' },
-        html = { 'prettier', stop_after_first = true },
+        html = { 'prettierd', 'prettier', stop_after_first = true },
         markdown = { 'prettier', stop_after_first = true },
-        yaml = { 'prettier', stop_after_first = true },
-        json = { 'prettier', stop_after_first = true },
+        yaml = { 'prettierd', 'prettier', stop_after_first = true },
+        json = { 'prettierd', 'prettier', stop_after_first = true },
         shell = { 'shfmt', lsp_format = 'fallback' },
 
         -- Conform can also run multiple formatters sequentially
