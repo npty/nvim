@@ -46,14 +46,14 @@ function M.setup()
   end, { desc = 'Git Blame Line' })
 
   -- Split management
-  vim.api.nvim_set_keymap('n', '<leader>vs', ':vsplit<CR>', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<leader>hs', ':split<CR>', { noremap = true, silent = true })
+  vim.keymap.set('n', '<leader>vs', ':vsplit<CR>', { desc = 'Vertical Split' })
+  vim.keymap.set('n', '<leader>hs', ':split<CR>', { desc = 'Horizontal Split' })
 
   -- Tab management
-  vim.api.nvim_set_keymap('n', '<C-t>', ':tabnew<CR>', { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>', ':tabnew<CR>', { desc = 'New Tab' })
 
   -- Insert mode escape
-  vim.api.nvim_set_keymap('i', 'jk', '<Esc>', { noremap = true, silent = true })
+  vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Escape Insert Mode' })
 
   -- Trouble keymaps
   local trouble_keys = {
@@ -94,24 +94,10 @@ function M.setup()
   end
 
   -- Git browser
-  vim.api.nvim_set_keymap('n', '<leader>gh', ':GBrowse<CR>', { noremap = true, silent = true })
+  vim.keymap.set('n', '<leader>gh', ':GBrowse<CR>', { desc = 'Git Browse' })
 
-  -- -- Toggle completion
-  -- local cmp_toggle_flag = true
-  -- function _G.toggle_completion()
-  --   if cmp_toggle_flag then
-  --     require('cmp').setup.buffer { enabled = false }
-  --     print 'Completion disabled'
-  --   else
-  --     require('cmp').setup.buffer { enabled = true }
-  --     print 'Completion enabled'
-  --   end
-  --   cmp_toggle_flag = not cmp_toggle_flag
-  -- end
-  -- vim.api.nvim_set_keymap('n', '<leader>tc', ':lua toggle_completion()<CR>', { noremap = true, silent = true })
-  --
   -- Toggle Diff View
-  vim.api.nvim_set_keymap('n', '<leader>dv', ':DiffviewOpen<CR>', { noremap = true, silent = true })
+  vim.keymap.set('n', '<leader>dv', ':DiffviewOpen<CR>', { desc = 'Diff View Open' })
 
   -- Osc Yank
   vim.keymap.set('n', '<leader>c', '<Plug>OSCYankOperator')
