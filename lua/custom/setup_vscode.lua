@@ -222,123 +222,130 @@ local refactor = {
   end,
 }
 
--- https://vi.stackexchange.com/a/31887
-local nv_keymap = function(lhs, rhs)
-  vim.api.nvim_set_keymap('n', lhs, rhs, { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('v', lhs, rhs, { noremap = true, silent = true })
-end
+local M = {}
 
-local nx_keymap = function(lhs, rhs)
-  vim.api.nvim_set_keymap('n', lhs, rhs, { silent = true })
-  vim.api.nvim_set_keymap('v', lhs, rhs, { silent = true })
-end
+function M.setup()
+  -- https://vi.stackexchange.com/a/31887
+  local nv_keymap = function(lhs, rhs)
+    vim.api.nvim_set_keymap('n', lhs, rhs, { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('v', lhs, rhs, { noremap = true, silent = true })
+  end
 
---#region keymap
-vim.g.mapleader = ' '
+  local nx_keymap = function(lhs, rhs)
+    -- It's generally recommended to use noremap = true unless recursion is intended
+    vim.api.nvim_set_keymap('n', lhs, rhs, { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('v', lhs, rhs, { noremap = true, silent = true })
+  end
 
-nv_keymap('s', '}')
-nv_keymap('S', '{')
+  --#region keymap
+  vim.g.mapleader = ' '
 
-nv_keymap('<leader>h', '^')
-nv_keymap('<leader>l', '$')
-nv_keymap('<leader>a', '%')
+  nv_keymap('s', '}')
+  nv_keymap('S', '{')
 
-nx_keymap('j', 'gj')
-nx_keymap('k', 'gk')
+  nv_keymap('<leader>h', '^')
+  nv_keymap('<leader>l', '$')
+  nv_keymap('<leader>a', '%')
 
-vim.keymap.set({ 'n', 'v' }, '<leader>/', comment.selected)
+  nx_keymap('j', 'gj')
+  nx_keymap('k', 'gk')
 
-vim.keymap.set({ 'n' }, '<leader>i', editor.organizeImport)
+  vim.keymap.set({ 'n', 'v' }, '<leader>/', comment.selected)
 
--- no highlight
-vim.keymap.set({ 'n' }, '<leader>n', '<cmd>noh<cr>')
+  vim.keymap.set({ 'n' }, '<leader>i', editor.organizeImport)
 
-vim.keymap.set({ 'n', 'v' }, '<leader> ', workbench.showCommands)
+  -- no highlight
+  vim.keymap.set({ 'n' }, '<leader>n', '<cmd>noh<cr>')
 
-vim.keymap.set({ 'n', 'v' }, 'H', workbench.previousEditor)
-vim.keymap.set({ 'n', 'v' }, 'L', workbench.nextEditor)
+  vim.keymap.set({ 'n', 'v' }, '<leader> ', workbench.showCommands)
 
--- error
-vim.keymap.set({ 'n' }, '<leader>el', error.list)
-vim.keymap.set({ 'n' }, '<leader>en', error.next)
-vim.keymap.set({ 'n' }, '<leader>ep', error.previous)
+  vim.keymap.set({ 'n', 'v' }, 'H', workbench.previousEditor)
+  vim.keymap.set({ 'n', 'v' }, 'L', workbench.nextEditor)
 
--- git
-vim.keymap.set({ 'n' }, '<leader>gb', git.switch)
-vim.keymap.set({ 'n' }, '<leader>gi', git.init)
-vim.keymap.set({ 'n' }, '<leader>gd', git.deleteBranch)
-vim.keymap.set({ 'n' }, '<leader>gf', git.fetch)
-vim.keymap.set({ 'n' }, '<leader>gs', git.status)
-vim.keymap.set({ 'n' }, '<leader>gp', git.pull)
-vim.keymap.set({ 'n' }, '<leader>gg', git.graph)
+  -- error
+  vim.keymap.set({ 'n' }, '<leader>el', error.list)
+  vim.keymap.set({ 'n' }, '<leader>en', error.next)
+  vim.keymap.set({ 'n' }, '<leader>ep', error.previous)
 
--- project
-vim.keymap.set({ 'n' }, '<leader>pf', project.findFile)
-vim.keymap.set({ 'n' }, '<leader>pp', project.switch)
-vim.keymap.set({ 'n' }, '<leader>pt', project.tree)
+  -- git
+  vim.keymap.set({ 'n' }, '<leader>gb', git.switch)
+  vim.keymap.set({ 'n' }, '<leader>gi', git.init)
+  vim.keymap.set({ 'n' }, '<leader>gd', git.deleteBranch)
+  vim.keymap.set({ 'n' }, '<leader>gf', git.fetch)
+  vim.keymap.set({ 'n' }, '<leader>gs', git.status)
+  vim.keymap.set({ 'n' }, '<leader>gp', git.pull)
+  vim.keymap.set({ 'n' }, '<leader>gg', git.graph)
 
--- file
-vim.keymap.set({ 'n', 'v' }, '<space>w', file.save)
-vim.keymap.set({ 'n', 'v' }, '<space>wa', file.saveAll)
-vim.keymap.set({ 'n', 'v' }, '<space>fs', file.save)
-vim.keymap.set({ 'n', 'v' }, '<space>fS', file.saveAll)
-vim.keymap.set({ 'n' }, '<space>ff', file.format)
-vim.keymap.set({ 'n' }, '<space>fn', file.new)
-vim.keymap.set({ 'n' }, '<space>ft', file.showInExplorer)
-vim.keymap.set({ 'n' }, '<space>fr', file.rename)
+  -- project
+  vim.keymap.set({ 'n' }, '<leader>sf', project.findFile)
+  vim.keymap.set({ 'n' }, '<leader>pp', project.switch)
+  vim.keymap.set({ 'n' }, '<leader>pt', project.tree)
 
--- buffer/editor
-vim.keymap.set({ 'n', 'v' }, '<space>c', editor.closeActive)
-vim.keymap.set({ 'n', 'v' }, '<space>bc', editor.closeActive)
-vim.keymap.set({ 'n', 'v' }, '<space>k', editor.closeOther)
-vim.keymap.set({ 'n', 'v' }, '<space>bk', editor.closeOther)
+  -- file
+  vim.keymap.set({ 'n', 'v' }, '<space>w', file.save)
+  vim.keymap.set({ 'n', 'v' }, '<space>wa', file.saveAll)
+  vim.keymap.set({ 'n', 'v' }, '<space>fs', file.save)
+  vim.keymap.set({ 'n', 'v' }, '<space>fS', file.saveAll)
+  vim.keymap.set({ 'n' }, '<space>ff', file.format)
+  vim.keymap.set({ 'n' }, '<space>fn', file.new)
+  vim.keymap.set({ 'n' }, '<space>ft', file.showInExplorer)
+  vim.keymap.set({ 'n' }, '<space>fr', file.rename)
 
--- toggle
-vim.keymap.set({ 'n', 'v' }, '<leader>ta', toggle.toggleActivityBar)
-vim.keymap.set({ 'n', 'v' }, '<leader>tz', toggle.toggleZenMode)
-vim.keymap.set({ 'n', 'v' }, '<leader>ts', toggle.toggleSideBarVisibility)
-vim.keymap.set({ 'n', 'v' }, '<leader>tt', toggle.theme)
+  -- buffer/editor
+  vim.keymap.set({ 'n', 'v' }, '<space>c', editor.closeActive)
+  vim.keymap.set({ 'n', 'v' }, '<space>bc', editor.closeActive)
+  vim.keymap.set({ 'n', 'v' }, '<space>k', editor.closeOther)
+  vim.keymap.set({ 'n', 'v' }, '<space>bk', editor.closeOther)
 
--- refactor
-vim.keymap.set({ 'v' }, '<leader>r', refactor.showMenu)
-vim.keymap.set({ 'n' }, '<leader>rr', symbol.rename)
-vim.api.nvim_set_keymap('n', '<leader>rd', 'V%d', { silent = true })
-vim.api.nvim_set_keymap('n', '<leader>rv', 'V%', { silent = true })
+  -- toggle
+  vim.keymap.set({ 'n', 'v' }, '<leader>ta', toggle.toggleActivityBar)
+  vim.keymap.set({ 'n', 'v' }, '<leader>tz', toggle.toggleZenMode)
+  vim.keymap.set({ 'n', 'v' }, '<leader>ts', toggle.toggleSideBarVisibility)
+  vim.keymap.set({ 'n', 'v' }, '<leader>tt', toggle.theme)
 
--- bookmark
-vim.keymap.set({ 'n' }, '<leader>m', bookmark.toggle)
-vim.keymap.set({ 'n' }, '<leader>mt', bookmark.toggle)
-vim.keymap.set({ 'n' }, '<leader>ml', bookmark.list)
-vim.keymap.set({ 'n' }, '<leader>mn', bookmark.next)
-vim.keymap.set({ 'n' }, '<leader>mp', bookmark.previous)
+  -- refactor
+  vim.keymap.set({ 'v' }, '<leader>r', refactor.showMenu)
+  vim.keymap.set({ 'n' }, '<leader>rr', symbol.rename)
+  vim.api.nvim_set_keymap('n', '<leader>rd', 'V%d', { silent = true })
+  vim.api.nvim_set_keymap('n', '<leader>rv', 'V%', { silent = true })
 
-vim.keymap.set({ 'n' }, '<leader>sr', search.reference)
-vim.keymap.set({ 'n' }, '<leader>sR', search.referenceInSideBar)
-vim.keymap.set({ 'n' }, '<leader>sp', search.project)
-vim.keymap.set({ 'n' }, '<leader>st', search.text)
+  -- bookmark
+  vim.keymap.set({ 'n' }, '<leader>m', bookmark.toggle)
+  vim.keymap.set({ 'n' }, '<leader>mt', bookmark.toggle)
+  vim.keymap.set({ 'n' }, '<leader>ml', bookmark.list)
+  vim.keymap.set({ 'n' }, '<leader>mn', bookmark.next)
+  vim.keymap.set({ 'n' }, '<leader>mp', bookmark.previous)
 
--- vscode
-vim.keymap.set({ 'n' }, '<leader>ve', vscode.focusEditor)
-vim.keymap.set({ 'n' }, '<leader>vl', vscode.moveSideBarLeft)
-vim.keymap.set({ 'n' }, '<leader>vr', vscode.moveSideBarRight)
+  vim.keymap.set({ 'n' }, '<leader>sr', search.reference)
+  vim.keymap.set({ 'n' }, '<leader>sR', search.referenceInSideBar)
+  vim.keymap.set({ 'n' }, '<leader>sp', search.project)
+  vim.keymap.set({ 'n' }, '<leader>st', search.text)
 
---folding
-vim.keymap.set({ 'n' }, '<leader>zr', fold.openAll)
-vim.keymap.set({ 'n' }, '<leader>zO', fold.openRecursive)
-vim.keymap.set({ 'n' }, '<leader>zo', fold.open)
-vim.keymap.set({ 'n' }, '<leader>zm', fold.all)
-vim.keymap.set({ 'n' }, '<leader>zb', fold.blockComment)
-vim.keymap.set({ 'n' }, '<leader>zc', fold.close)
-vim.keymap.set({ 'n' }, '<leader>zg', fold.allMarkerRegion)
-vim.keymap.set({ 'n' }, '<leader>zG', fold.openAllMarkerRegion)
-vim.keymap.set({ 'n' }, '<leader>za', fold.toggle)
+  -- vscode
+  vim.keymap.set({ 'n' }, '<leader>ve', vscode.focusEditor)
+  vim.keymap.set({ 'n' }, '<leader>vl', vscode.moveSideBarLeft)
+  vim.keymap.set({ 'n' }, '<leader>vr', vscode.moveSideBarRight)
 
-vim.keymap.set({ 'n' }, 'zr', fold.openAll)
-vim.keymap.set({ 'n' }, 'zO', fold.openRecursive)
-vim.keymap.set({ 'n' }, 'zo', fold.open)
-vim.keymap.set({ 'n' }, 'zm', fold.all)
-vim.keymap.set({ 'n' }, 'zb', fold.blockComment)
-vim.keymap.set({ 'n' }, 'zc', fold.close)
-vim.keymap.set({ 'n' }, 'zg', fold.allMarkerRegion)
-vim.keymap.set({ 'n' }, 'zG', fold.openAllMarkerRegion)
-vim.keymap.set({ 'n' }, 'za', fold.toggle)
+  --folding
+  vim.keymap.set({ 'n' }, '<leader>zr', fold.openAll)
+  vim.keymap.set({ 'n' }, '<leader>zO', fold.openRecursive)
+  vim.keymap.set({ 'n' }, '<leader>zo', fold.open)
+  vim.keymap.set({ 'n' }, '<leader>zm', fold.all)
+  vim.keymap.set({ 'n' }, '<leader>zb', fold.blockComment)
+  vim.keymap.set({ 'n' }, '<leader>zc', fold.close)
+  vim.keymap.set({ 'n' }, '<leader>zg', fold.allMarkerRegion)
+  vim.keymap.set({ 'n' }, '<leader>zG', fold.openAllMarkerRegion)
+  vim.keymap.set({ 'n' }, '<leader>za', fold.toggle)
+
+  vim.keymap.set({ 'n' }, 'zr', fold.openAll)
+  vim.keymap.set({ 'n' }, 'zO', fold.openRecursive)
+  vim.keymap.set({ 'n' }, 'zo', fold.open)
+  vim.keymap.set({ 'n' }, 'zm', fold.all)
+  vim.keymap.set({ 'n' }, 'zb', fold.blockComment)
+  vim.keymap.set({ 'n' }, 'zc', fold.close)
+  vim.keymap.set({ 'n' }, 'zg', fold.allMarkerRegion)
+  vim.keymap.set({ 'n' }, 'zG', fold.openAllMarkerRegion)
+  vim.keymap.set({ 'n' }, 'za', fold.toggle)
+end -- End of M.setup()
+
+return M

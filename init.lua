@@ -1,9 +1,11 @@
 -- Load environment variables
-local env = require 'custom.env'
+local env = require 'lua/custom/env'
 env.load_env()
 env.check_required_env()
 
-require 'config.options'
+--  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
 vim.env.MYVIMRC = vim.fn.expand '~/.config/nvim/init.lua'
 -- Limit the size of typescript server
@@ -70,18 +72,19 @@ require('lazy').setup({
 
 -- After lazy setup, configure plugins only outside VSCode
 if not vim.g.vscode then
+  require 'config.options'
   -- Set colorscheme
   vim.cmd.colorscheme 'neofusion'
 
   -- Setup all plugins
   require('custom.post_setup').setup()
+
+  require('config.keymaps').setup()
 end
 
 if vim.g.vscode then
   require('custom.setup_vscode').setup()
 end
-
-require('config.keymaps').setup()
 
 -- Support code snippet for markdown
 vim.g.markdown_fenced_languages = { 'json', 'javascript', 'typescript', 'rust', 'bash=sh' }
