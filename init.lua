@@ -1,5 +1,5 @@
 -- Load environment variables
-local env = require 'lua/custom/env'
+local env = require 'custom/env'
 env.load_env()
 env.check_required_env()
 
