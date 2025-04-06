@@ -51,7 +51,13 @@ function M.setup()
     sync_install = false,
     ignore_install = {},
     auto_install = true,
-    ensure_installed = { 'lua', 'typescript', 'javascript' },
+    ensure_installed = { 'lua', 'typescript', 'javascript', 'json' },
+    highlight = {
+      enable = true,
+    },
+    fold = {
+      enable = true,
+    },
     textobjects = {
       select = {
         enable = true,

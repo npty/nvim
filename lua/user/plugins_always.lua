@@ -54,6 +54,9 @@ return {
         'html',
         'lua',
         'markdown',
+        'tmux',
+        'toml',
+        'yaml',
       },
       auto_install = true,
       highlight = {

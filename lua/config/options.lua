@@ -100,6 +100,8 @@ vim.opt.termguicolors = true
 
 vim.wo.foldmethod = 'expr'
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.wo.foldenable = false
+vim.wo.foldlevel = 99
 
 vim.g.rust_fold = 1
 

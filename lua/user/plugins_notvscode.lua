@@ -402,7 +402,7 @@ return {
           },
         },
       },
-      auto_suggestions_provider = 'openai',
+      auto_suggestions_provider = 'gemini',
       openai = {
         endpoint = 'https://api.deepseek.com/v1',
         model = 'deepseek-chat',
@@ -415,6 +415,14 @@ return {
         api_key_name = 'GOOGLEAI_API_KEY',
         model = 'gemini-2.5-pro-exp-03-25',
         temperature = 0,
+      },
+      vendors = {
+        groq = {
+          __inherited_from = 'openai',
+          api_key_name = 'GROQ_API_KEY',
+          endpoint = 'https://api.groq.com/openai/v1/',
+          model = 'meta-llama/llama-4-maverick-17b-128e-instruct',
+        },
       },
     },
     dependencies = {
