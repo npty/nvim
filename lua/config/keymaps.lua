@@ -230,6 +230,12 @@ function M.setup()
   vim.keymap.set('n', '<leader>sg', function()
     Snacks.picker.grep { live = true }
   end, { desc = '[S]earch by [G]rep' })
+  vim.keymap.set('n', '<leader>st', function()
+    Snacks.picker.grep { live = true, ft = { 'ts' } }
+  end, { desc = '[S]earch by [G]rep Typescript' })
+  vim.keymap.set('n', '<leader>sj', function()
+    Snacks.picker.grep { live = true, ft = { 'json' } }
+  end, { desc = '[S]earch by [G]rep Typescript' })
   vim.keymap.set('n', '<leader>sd', function()
     Snacks.picker.diagnostics()
   end, { desc = '[S]earch [D]iagnostics' })
@@ -338,7 +344,6 @@ function M.setup()
     callback = setup_lsp_keymaps,
   })
 
-  -- Additional useful Snacks keymaps you might want to add:
   vim.keymap.set('n', '<leader>u', function()
     Snacks.picker.undo()
   end, { desc = 'Undo History' })
