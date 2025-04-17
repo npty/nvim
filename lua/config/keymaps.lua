@@ -21,6 +21,9 @@ function M.setup()
   vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
   vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
+  -- Save
+  vim.keymap.set('n', '<Space>w', '<cmd>write<cr>', { desc = 'Save' })
+
   -- NvimTree Toggle
   vim.keymap.set('n', '<C-m>', function()
     Snacks.explorer()
@@ -289,9 +292,6 @@ function M.setup()
     map('<leader>ds', function()
       Snacks.picker.lsp_symbols()
     end, '[D]ocument [S]ymbols')
-    map('<leader>ws', function()
-      Snacks.picker.lsp_workspace_symbols()
-    end, '[W]orkspace [S]ymbols')
 
     -- Keep the same non-picker LSP bindings
     map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
