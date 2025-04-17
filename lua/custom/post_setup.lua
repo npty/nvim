@@ -10,12 +10,12 @@ function M.setup()
   end
 
   -- Configure Octo.nvim
-  require('octo').setup {
-    suppress_missing_scope = {
-      projects_v2 = true,
-    },
-  }
-
+  -- require('octo').setup {
+  --   suppress_missing_scope = {
+  --     projects_v2 = true,
+  --   },
+  -- }
+  --
   -- Configure TreeSitter context
   require('treesitter-context').setup {
     enable = true,
