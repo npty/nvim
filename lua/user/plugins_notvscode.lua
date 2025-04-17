@@ -321,6 +321,12 @@ return {
     cmd = 'Trouble',
   },
 
+  {
+    'chrisgrieser/nvim-early-retirement',
+    config = true,
+    event = 'VeryLazy',
+  },
+
   -- Enhanced UI for messages, cmdline and popups
   -- {
   --   'folke/noice.nvim',
@@ -499,6 +505,7 @@ return {
     event = 'InsertEnter',
     config = function()
       vim.api.nvim_set_hl(0, 'CmpItemKindSupermaven', { fg = '#E6E6FA' })
+      require('supermaven-nvim').setup {}
     end,
     cmd = {
       'SupermavenUseFree',
@@ -524,9 +531,6 @@ return {
 
   -- Git diff viewer
   'sindrets/diffview.nvim',
-
-  -- Vim game to practice movement
-  'ThePrimeagen/vim-be-good',
 
   -- Tmux integration
   'aserowy/tmux.nvim',
