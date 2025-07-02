@@ -43,25 +43,21 @@ This document provides a comprehensive list of all keybindings in the Neovim con
 
 ## LSP
 
-<<<<<<< HEAD
-o
-=======
-
-> > > > > > > Snippet
-> > > > > > > | Keybinding | Mode | Description |
-> > > > > > > | ------------ | ---- | ------------------------ |
-> > > > > > > | `gd` | N | Go to definition (Snacks) |
-> > > > > > > | `gr` | N | Find references (Snacks) |
-> > > > > > > | `gI` | N | Go to implementation (Snacks) |
-> > > > > > > | `<leader>D` | N | Type definition (Snacks) |
-> > > > > > > | `gD` | N | Go to declaration |
-> > > > > > > | `<leader>rn` | N | Rename |
-> > > > > > > | `<leader>ca` | N | Code action |
-> > > > > > > | `K` | N | Show hover documentation (Built-in)|
-> > > > > > > | `<C-k>` | N/I | Show signature help |
-> > > > > > > | `<leader>ds` | N | Document symbols (Snacks) |
-> > > > > > > | `<leader>ws` | N | Workspace symbols (Snacks) |
-> > > > > > > | `<leader>th` | N | Toggle Inlay Hints |
+Snippet
+| Keybinding | Mode | Description |
+| ------------ | ---- | ------------------------ |
+| `gd` | N | Go to definition (Snacks) |
+| `gr` | N | Find references (Snacks) |
+| `gI` | N | Go to implementation (Snacks) |
+| `<leader>D` | N | Type definition (Snacks) |
+| `gD` | N | Go to declaration |
+| `<leader>rn` | N | Rename |
+| `<leader>ca` | N | Code action |
+| `K` | N | Show hover documentation (Built-in)|
+| `<C-k>` | N/I | Show signature help |
+| `<leader>ds` | N | Document symbols (Snacks) |
+| `<leader>ws` | N | Workspace symbols (Snacks) |
+| `<leader>th` | N | Toggle Inlay Hints |
 
 ## Git
 

@@ -22,7 +22,7 @@ function M.setup()
   vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
   -- Save
-  vim.keymap.set('n', '<Space>w', '<cmd>write<cr>', { desc = 'Save' })
+  vim.keymap.set('n', '<leader>w', '<cmd>write<cr>', { desc = 'Save' })
 
   -- NvimTree Toggle
   vim.keymap.set('n', '<C-m>', function()
