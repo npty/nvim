@@ -27,9 +27,7 @@ end
 
 -- Function to check if all required environment variables are set
 function M.check_required_env()
-  local required_vars = {
-    'DEEPSEEK_API_KEY',
-  }
+  local required_vars = {}
 
   local missing_vars = {}
   for _, var in ipairs(required_vars) do

@@ -37,8 +37,6 @@ M.servers = {
     },
   },
 
-  move_analyzer = {},
-
   eslint = {},
 
   tailwindcss = {},
