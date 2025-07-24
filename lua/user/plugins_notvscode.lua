@@ -506,32 +506,6 @@ return {
     },
   },
 
-  -- Code completion
-  {
-    'supermaven-inc/supermaven-nvim',
-    event = 'InsertEnter',
-    config = function()
-      vim.api.nvim_set_hl(0, 'CmpItemKindSupermaven', { fg = '#E6E6FA' })
-      require('supermaven-nvim').setup {}
-    end,
-    cmd = {
-      'SupermavenUseFree',
-      'SupermavenUsePro',
-    },
-    opts = {
-      color = {
-        suggestion_color = '#C1FFC1',
-        cterm = 244,
-      },
-      keymaps = {
-        accept_suggestion = nil, -- handled by nvim-cmp / blink.cmp
-        clear_suggestion = '<C-]>',
-        accept_word = '<C-j>',
-      },
-      disable_inline_completion = vim.g.ai_cmp,
-      ignore_filetypes = { 'bigfile', 'snacks_input', 'snacks_notif' },
-    },
-  },
 
   -- Search and replace
   'nvim-pack/nvim-spectre',
@@ -563,7 +537,7 @@ return {
   {
     'saghen/blink.cmp',
     -- optional: provides snippets for the snippet source
-    dependencies = { 'supermaven-nvim', 'saghen/blink.compat', 'rafamadriz/friendly-snippets' },
+    dependencies = { 'saghen/blink.compat', 'rafamadriz/friendly-snippets' },
 
     -- use a release tag to download pre-built binaries
     version = '1.*',
