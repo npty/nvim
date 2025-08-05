@@ -56,6 +56,8 @@ M.servers = {
 
   marksman = {},
 
+  prismals = {},
+
   lua_ls = {
     -- cmd = {...},
     -- filetypes = { ...},

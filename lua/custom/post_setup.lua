@@ -51,7 +51,7 @@ function M.setup()
     sync_install = false,
     ignore_install = {},
     auto_install = true,
-    ensure_installed = { 'lua', 'typescript', 'javascript', 'json' },
+    ensure_installed = { 'lua', 'typescript', 'javascript', 'json', 'prisma' },
     highlight = {
       enable = true,
     },
@@ -89,6 +89,11 @@ function M.setup()
   vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
     pattern = '*.move',
     command = 'set filetype=move',
+  })
+
+  vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+    pattern = '*.prisma',
+    command = 'set filetype=prisma',
   })
 
   require('tmux').setup()
