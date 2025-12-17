@@ -221,12 +221,11 @@ return {
     },
 
     config = function(_, opts)
-      local lspconfig = require 'lspconfig'
       for server, config in pairs(opts.servers) do
         -- passing config.capabilities to blink.cmp merges with the capabilities in your
         -- `opts[server].capabilities, if you've defined it
         config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
-        lspconfig[server].setup(config)
+        vim.lsp.config[server] = config
       end
     end,
   },
@@ -366,11 +365,37 @@ return {
     },
   },
 
+  -- Treesitter for syntax highlighting and code parsing
+  {
+    'nvim-treesitter/nvim-treesitter',
+    branch = 'master',
+    build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = { 'lua', 'typescript', 'javascript', 'json', 'prisma' },
+        sync_install = false,
+        auto_install = true,
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        },
+        indent = {
+          enable = true,
+        },
+      }
+    end,
+  },
+
   -- Code context at the top of the buffer
   {
     'nvim-treesitter/nvim-treesitter-context',
     event = 'BufReadPre',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+    },
+    opts = {},
   },
+
 
   -- Terminal integration
   {

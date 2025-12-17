@@ -46,45 +46,7 @@ function M.setup()
     },
   }
 
-  require('nvim-treesitter.configs').setup {
-    modules = {},
-    sync_install = false,
-    ignore_install = {},
-    auto_install = true,
-    ensure_installed = { 'lua', 'typescript', 'javascript', 'json', 'prisma' },
-    highlight = {
-      enable = true,
-    },
-    fold = {
-      enable = true,
-    },
-    textobjects = {
-      select = {
-        enable = true,
-        lookahead = true,
-        keymaps = {
-          ['af'] = '@function.outer',
-          ['if'] = '@function.inner',
-          ['ac'] = '@class.outer',
-          ['ic'] = '@class.inner',
-          ['as'] = '@statement.outer',
-          ['is'] = '@statement.inner',
-        },
-      },
-      move = {
-        enable = true,
-        set_jumps = true,
-        goto_next_start = {
-          [']f'] = '@function.outer',
-          [']c'] = '@class.outer',
-        },
-        goto_previous_start = {
-          ['[f'] = '@function.outer',
-          ['[c'] = '@class.outer',
-        },
-      },
-    },
-  }
+  -- TreeSitter configuration is now handled in plugins_notvscode.lua
 
   vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
     pattern = '*.move',
@@ -142,7 +104,7 @@ function M.setup()
         local server = servers[server_name] or {}
         -- Merge capabilities correctly
         server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-        require('lspconfig')[server_name].setup(server)
+        vim.lsp.config[server_name] = server
       end,
     },
   }
