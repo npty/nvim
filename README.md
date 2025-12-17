@@ -21,6 +21,25 @@ A modern Neovim configuration optimized for TypeScript and blockchain developmen
 - fd (for Telescope file searching)
 - A Nerd Font (recommended for icons)
 
+### System Dependencies
+
+For Mason formatters to install correctly, you need:
+
+```bash
+# On Ubuntu/Debian/WSL
+sudo apt-get update && sudo apt-get install -y unzip python3-venv
+
+# On macOS
+brew install unzip python3
+
+# On Arch Linux
+sudo pacman -S unzip python
+```
+
+These are required for:
+- **unzip** - Installing stylua and other binary tools
+- **python3-venv** - Installing Python-based formatters (black, isort)
+
 ## 🔒 Environment Variables
 
 This configuration uses several environment variables for API keys and secrets. Create a `.env` file in your Neovim config directory and add your keys:

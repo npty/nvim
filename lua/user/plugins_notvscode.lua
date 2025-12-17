@@ -372,15 +372,32 @@ return {
     build = ':TSUpdate',
     config = function()
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'lua', 'typescript', 'javascript', 'json', 'prisma' },
+        ensure_installed = {
+          'bash',
+          'diff',
+          'html',
+          'javascript',
+          'json',
+          'lua',
+          'markdown',
+          'prisma',
+          'rust',
+          'solidity',
+          'tmux',
+          'toml',
+          'tsx',
+          'typescript',
+          'yaml',
+        },
         sync_install = false,
         auto_install = true,
         highlight = {
           enable = true,
-          additional_vim_regex_highlighting = false,
+          additional_vim_regex_highlighting = { 'ruby' },
         },
         indent = {
           enable = true,
+          disable = { 'ruby', 'javascript', 'typescript', 'rust', 'json', 'markdown', 'yaml' },
         },
       }
     end,

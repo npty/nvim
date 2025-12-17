@@ -35,43 +35,7 @@ return {
     end,
   },
 
-  -- TreeSitter for better syntax highlighting and text objects
-  {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    main = 'nvim-treesitter.configs',
-    opts = {
-      ensure_installed = {
-        'bash',
-        'javascript',
-        'typescript',
-        'tsx',
-        'json',
-        'rust',
-        'solidity',
-        'toml',
-        'diff',
-        'html',
-        'lua',
-        'markdown',
-        'tmux',
-        'toml',
-        'yaml',
-      },
-      auto_install = true,
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby', 'javascript', 'typescript', 'rust', 'json', 'markdown', 'yaml' } },
-    },
-  },
-
-  -- TreeSitter text objects for better code navigation
-  {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    dependencies = { 'nvim-treesitter/nvim-treesitter' },
-  },
+  -- TreeSitter configuration moved to plugins_notvscode.lua to avoid conflicts
 
   -- Other always-loaded plugins from your config
   {
