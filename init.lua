@@ -7,6 +7,7 @@ env.check_required_env()
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Set up environment variables
 vim.env.MYVIMRC = vim.fn.expand '~/.config/nvim/init.lua'
 -- Limit the size of typescript server
 vim.env.TSS_MAX_MEMORY = env.get_env 'TSS_MAX_MEMORY' or '4096'

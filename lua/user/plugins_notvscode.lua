@@ -399,63 +399,6 @@ return {
     opts = {},
   },
 
-  -- Code AI tools
-  {
-    'yetone/avante.nvim',
-    build = 'make',
-    lazy = false,
-    version = false,
-    init = function()
-      vim.api.nvim_set_hl(0, 'MiniPickNormal', { link = 'Normal' })
-      vim.api.nvim_set_hl(0, 'MiniPickMatchCurrent', { bg = '#3c3836', fg = '#ebdbb2' })
-      vim.api.nvim_set_hl(0, 'MiniPickPrompt', { link = 'Title' })
-      vim.api.nvim_set_hl(0, 'MiniPickBorder', { link = 'FloatBorder' })
-      vim.api.nvim_set_hl(0, 'MiniPickPreview', { link = 'NormalFloat' })
-      vim.api.nvim_set_hl(0, 'MiniPickSelection', { bg = '#504945' })
-    end,
-    opts = {
-      provider = 'gemini',
-      file_selector = {
-        provider = 'mini.pick',
-        mini_pick = {
-          options = {
-            use_icons = true,
-          },
-        },
-      },
-      auto_suggestions_provider = 'gemini',
-      providers = {
-        gemini = {
-          api_key_name = 'GOOGLEAI_API_KEY',
-          model = 'gemini-2.5-pro-exp-03-25',
-          temperature = 0,
-        },
-        groq = {
-          __inherited_from = 'openai',
-          api_key_name = 'GROQ_API_KEY',
-          endpoint = 'https://api.groq.com/openai/v1/',
-          model = 'meta-llama/llama-4-maverick-17b-128e-instruct',
-        },
-      },
-    },
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-      'stevearc/dressing.nvim',
-      'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
-      'echasnovski/mini.pick',
-      'hrsh7th/nvim-cmp',
-      'zbirenbaum/copilot.lua',
-      -- {
-      --   'MeanderingProgrammer/render-markdown.nvim',
-      --   opts = {
-      --     file_types = { 'markdown', 'Avante' },
-      --   },
-      --   ft = { 'markdown', 'Avante' },
-      -- },
-    },
-  },
-
   -- Visual tools
   {
     'folke/twilight.nvim',
@@ -505,7 +448,6 @@ return {
       lang = 'typescript',
     },
   },
-
 
   -- Search and replace
   'nvim-pack/nvim-spectre',
