@@ -51,6 +51,56 @@ function M.setup()
   -- Split management
   vim.keymap.set('n', '<leader>vs', ':vsplit<CR>', { desc = 'Vertical Split' })
   vim.keymap.set('n', '<leader>hs', ':split<CR>', { desc = 'Horizontal Split' })
+  local function navigate_pane(direction, tmux_direction)
+    local current_win = vim.api.nvim_get_current_win()
+    vim.cmd('wincmd ' .. direction)
+
+    if vim.api.nvim_get_current_win() ~= current_win then
+      return
+    end
+
+    local ok, tmux = pcall(require, 'custom.tmux')
+    if not ok then
+      return
+    end
+
+    local command = tmux.command('select-pane -' .. tmux_direction)
+    if command then
+      vim.fn.system(command)
+    end
+  end
+
+  local function navigate_terminal_pane(direction, tmux_direction)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, false, true), 'n', false)
+    vim.schedule(function()
+      navigate_pane(direction, tmux_direction)
+    end)
+  end
+
+  vim.keymap.set('n', '<C-h>', function()
+    navigate_pane('h', 'L')
+  end, { desc = 'Move to left pane' })
+  vim.keymap.set('n', '<C-j>', function()
+    navigate_pane('j', 'D')
+  end, { desc = 'Move to lower pane' })
+  vim.keymap.set('n', '<C-k>', function()
+    navigate_pane('k', 'U')
+  end, { desc = 'Move to upper pane' })
+  vim.keymap.set('n', '<C-l>', function()
+    navigate_pane('l', 'R')
+  end, { desc = 'Move to right pane' })
+  vim.keymap.set('t', '<C-h>', function()
+    navigate_terminal_pane('h', 'L')
+  end, { desc = 'Move to left pane' })
+  vim.keymap.set('t', '<C-j>', function()
+    navigate_terminal_pane('j', 'D')
+  end, { desc = 'Move to lower pane' })
+  vim.keymap.set('t', '<C-k>', function()
+    navigate_terminal_pane('k', 'U')
+  end, { desc = 'Move to upper pane' })
+  vim.keymap.set('t', '<C-l>', function()
+    navigate_terminal_pane('l', 'R')
+  end, { desc = 'Move to right pane' })
 
   -- Tab management
   vim.keymap.set('n', '<C-t>', ':tabnew<CR>', { desc = 'New Tab' })
@@ -167,12 +217,6 @@ function M.setup()
     end, { desc = '[N]otification [U]pdate Test' })
   end
 
-  -- Toggle aerial
-  vim.keymap.set('n', '<leader>l', '<cmd>AerialToggle!<CR>')
-
-  -- Twilight
-  vim.api.nvim_set_keymap('n', '<leader>tw', ':Twilight<CR>', { noremap = true, silent = true })
-
   -- Set the keymaps with larger resize steps
   vim.api.nvim_set_keymap('n', '<C-w>>', '10<C-w>>', { noremap = true })
   vim.api.nvim_set_keymap('n', '<C-w><', '10<C-w><', { noremap = true })
@@ -192,22 +236,8 @@ function M.setup()
   -- Reload nvim config
   vim.keymap.set('n', '<leader>sr', ':Lazy reload *<CR>', { silent = true, desc = 'Reload config' })
 
-  -- Nvim Spectre Keymaps
-  vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', {
-    desc = 'Toggle Spectre',
-  })
-  vim.keymap.set('n', '<leader>sw', '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', {
-    desc = 'Search current word',
-  })
-  vim.keymap.set('v', '<leader>sw', '<esc><cmd>lua require("spectre").open_visual()<CR>', {
-    desc = 'Search current word',
-  })
-  vim.keymap.set('n', '<leader>sp', '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>', {
-    desc = 'Search on current file',
-  })
-
   -- Auto suggestion function signature
-  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { silent = true })
+  vim.keymap.set('n', '<leader>k', vim.lsp.buf.signature_help, { silent = true, desc = 'Signature Help' })
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { silent = true })
 
   -- Snacks picker
@@ -306,7 +336,7 @@ function M.setup()
 
     -- Keep the rest of your LSP setup (document highlighting, etc.)
     local client = vim.lsp.get_client_by_id(event.data.client_id)
-    if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+    if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
       local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
       vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
         buffer = event.buf,
@@ -330,7 +360,7 @@ function M.setup()
     end
 
     -- Toggle inlay hints
-    if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+    if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
       map('<leader>th', function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
       end, '[T]oggle Inlay [H]ints')

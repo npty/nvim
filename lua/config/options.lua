@@ -2,6 +2,7 @@
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
+vim.g.loaded_perl_provider = 0
 
 -- Setup font for neovide
 vim.o.guifont = 'PragmataProMonoLiga Nerd Font:h16:#e-subpixelantialias:#h-none'
@@ -112,16 +113,72 @@ vim.g.rust_fold = 1
 vim.opt.modeline = true
 vim.opt.modelines = 5
 
--- Trying to fix OSCYank issue in tmux
-vim.g.clipboard = {
-  name = 'tmux',
-  copy = {
-    ['+'] = 'tmux load-buffer -w -',
-    ['*'] = 'tmux load-buffer -w -',
-  },
-  paste = {
-    ['+'] = 'tmux save-buffer -',
-    ['*'] = 'tmux save-buffer -',
-  },
-  cache_enabled = true,
+local quiet_diagnostic_filetypes = {
+  typescript = true,
+  typescriptreact = true,
+  markdown = true,
+  yaml = true,
 }
+
+local function quiet_diagnostics(bufnr)
+  local filetype = vim.bo[bufnr].filetype
+  if quiet_diagnostic_filetypes[filetype] then
+    vim.diagnostic.enable(false, { bufnr = bufnr })
+  end
+
+  if filetype == 'markdown' or filetype == 'yaml' then
+    vim.api.nvim_buf_call(bufnr, function()
+      pcall(vim.treesitter.stop)
+    end)
+    vim.schedule(function()
+      if vim.api.nvim_buf_is_valid(bufnr) then
+        vim.api.nvim_buf_call(bufnr, function()
+          pcall(vim.treesitter.stop)
+        end)
+      end
+    end)
+  end
+end
+
+vim.api.nvim_create_autocmd({ 'FileType', 'BufEnter', 'LspAttach', 'DiagnosticChanged' }, {
+  desc = 'Keep TS/Markdown/YAML buffers free of visible diagnostics',
+  callback = function(args)
+    quiet_diagnostics(args.buf)
+  end,
+})
+
+if vim.fn.executable('pbcopy') == 1 and vim.fn.executable('pbpaste') == 1 then
+  vim.g.clipboard = {
+    name = 'macOS',
+    copy = {
+      ['+'] = 'pbcopy',
+      ['*'] = 'pbcopy',
+    },
+    paste = {
+      ['+'] = 'pbpaste',
+      ['*'] = 'pbpaste',
+    },
+    cache_enabled = false,
+  }
+else
+  -- Use tmux as a fallback clipboard provider only when Neovim can reach the
+  -- current tmux socket.
+  local tmux = require('custom.tmux')
+  local tmux_load_buffer = tmux.command('load-buffer -w -')
+  local tmux_save_buffer = tmux.command('save-buffer -')
+
+  if tmux_load_buffer and tmux_save_buffer then
+    vim.g.clipboard = {
+      name = 'tmux',
+      copy = {
+        ['+'] = tmux_load_buffer,
+        ['*'] = tmux_load_buffer,
+      },
+      paste = {
+        ['+'] = tmux_save_buffer,
+        ['*'] = tmux_save_buffer,
+      },
+      cache_enabled = true,
+    }
+  end
+end

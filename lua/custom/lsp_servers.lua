@@ -3,6 +3,8 @@
 
 local M = {}
 
+local quiet_diagnostic_handler = function() end
+
 M.servers = {
   -- clangd = {},
   -- gopls = {},
@@ -14,7 +16,11 @@ M.servers = {
   --    https://github.com/pmizio/typescript-tools.nvim
   --
   -- But for many setups, the LSP (`tsserver`) will work just fine
-  ts_ls = {},
+  ts_ls = {
+    handlers = {
+      ['textDocument/publishDiagnostics'] = quiet_diagnostic_handler,
+    },
+  },
 
   solidity_ls = {},
 
@@ -37,9 +43,28 @@ M.servers = {
     },
   },
 
-  eslint = {},
+  eslint = {
+    handlers = {
+      ['textDocument/publishDiagnostics'] = quiet_diagnostic_handler,
+    },
+  },
 
-  tailwindcss = {},
+  tailwindcss = {
+    filetypes = {
+      'html',
+      'css',
+      'scss',
+      'javascript',
+      'javascriptreact',
+      'typescript',
+      'typescriptreact',
+      'svelte',
+      'vue',
+    },
+    handlers = {
+      ['textDocument/publishDiagnostics'] = quiet_diagnostic_handler,
+    },
+  },
 
   jsonls = {},
 
@@ -54,7 +79,11 @@ M.servers = {
     },
   },
 
-  marksman = {},
+  marksman = {
+    handlers = {
+      ['textDocument/publishDiagnostics'] = quiet_diagnostic_handler,
+    },
+  },
 
   prismals = {},
 

@@ -157,7 +157,6 @@ The configuration uses the Neofusion color scheme by default. UI elements includ
 
 ## 📱 Terminal Integration
 
-- Integrated terminal with toggleterm.nvim
 - Tmux navigation support
 - OSC yank support for remote copying
 

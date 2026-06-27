@@ -54,7 +54,8 @@ Snippet
 | `<leader>rn` | N | Rename |
 | `<leader>ca` | N | Code action |
 | `K` | N | Show hover documentation (Built-in)|
-| `<C-k>` | N/I | Show signature help |
+| `<leader>k` | N | Show signature help |
+| `<C-k>` | I | Show signature help |
 | `<leader>ds` | N | Document symbols (Snacks) |
 | `<leader>ws` | N | Workspace symbols (Snacks) |
 | `<leader>th` | N | Toggle Inlay Hints |
@@ -138,15 +139,7 @@ Snippet
 
 ## Plugin-Specific
 
-<<<<<<< HEAD
-
-### OSC Yank
-
-=======
-
 ### OSC Yank (Clipboard)
-
-> > > > > > > Snippet
 
 | Keybinding   | Mode | Description    |
 | ------------ | ---- | -------------- |

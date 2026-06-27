@@ -16,11 +16,14 @@ return {
     },
   },
 
-  -- Minimal text editing enhancements that don't require UI
-  'wakatime/vim-wakatime',
-
   {
     'folke/snacks.nvim',
+    priority = 1000,
+    config = function(_, opts)
+      local snacks = require 'snacks'
+      snacks.setup(opts)
+      vim.ui.select = snacks.picker.select
+    end,
     opts = {
       notifier = {},
       picker = {
@@ -144,10 +147,7 @@ return {
         replace_netrw = true,
       },
       -- scroll = {},
-      statuscolumn = {},
-      words = {},
       git = {},
-      toggle = {},
       terminal = {},
       lazygit = {},
       styles = {
@@ -198,6 +198,7 @@ return {
           },
         },
       }
+      vim.ui.select = require('snacks').picker.select
     end,
   },
 
@@ -207,9 +208,10 @@ return {
   -- LSP and completion (doesn't make sense in VSCode)
   {
     'neovim/nvim-lspconfig',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       'saghen/blink.cmp',
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
+      'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
@@ -221,11 +223,30 @@ return {
     },
 
     config = function(_, opts)
+      local servers = opts.servers or {}
+      local ensure_installed = vim.tbl_keys(servers)
+      vim.list_extend(ensure_installed, {
+        'stylua',
+        'prettier',
+        'prettierd',
+        'shfmt',
+        'isort',
+        'black',
+      })
+
+      require('mason').setup()
+      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      require('mason-lspconfig').setup {
+        ensure_installed = vim.tbl_keys(servers),
+        automatic_enable = false,
+      }
+
       for server, config in pairs(opts.servers) do
         -- passing config.capabilities to blink.cmp merges with the capabilities in your
         -- `opts[server].capabilities, if you've defined it
         config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
-        vim.lsp.config[server] = config
+        vim.lsp.config(server, config)
+        vim.lsp.enable(server)
       end
     end,
   },
@@ -262,7 +283,6 @@ return {
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
         typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        rust = { 'rustfmt', lsp_format = 'fallback' },
         html = { 'prettierd', 'prettier', stop_after_first = true },
         markdown = { 'prettier', stop_after_first = true },
         yaml = { 'prettierd', 'prettier', stop_after_first = true },
@@ -354,6 +374,7 @@ return {
   -- Git integration
   {
     'lewis6991/gitsigns.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = {
       signs = {
         add = { text = '+' },
@@ -370,6 +391,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     branch = 'master',
     build = ':TSUpdate',
+    dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
     config = function()
       require('nvim-treesitter.configs').setup {
         ensure_installed = {
@@ -378,26 +400,60 @@ return {
           'html',
           'javascript',
           'json',
+          'latex',
           'lua',
           'markdown',
+          'norg',
           'prisma',
+          'regex',
           'rust',
+          'scss',
           'solidity',
+          'svelte',
           'tmux',
           'toml',
           'tsx',
+          'typst',
           'typescript',
+          'vue',
           'yaml',
         },
         sync_install = false,
         auto_install = true,
         highlight = {
           enable = true,
+          disable = { 'markdown', 'yaml' },
           additional_vim_regex_highlighting = { 'ruby' },
         },
         indent = {
           enable = true,
           disable = { 'ruby', 'javascript', 'typescript', 'rust', 'json', 'markdown', 'yaml' },
+        },
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ['af'] = '@function.outer',
+              ['if'] = '@function.inner',
+              ['ac'] = '@class.outer',
+              ['ic'] = '@class.inner',
+              ['as'] = '@statement.outer',
+              ['is'] = '@statement.inner',
+            },
+          },
+          move = {
+            enable = true,
+            set_jumps = true,
+            goto_next_start = {
+              [']f'] = '@function.outer',
+              [']c'] = '@class.outer',
+            },
+            goto_previous_start = {
+              ['[f'] = '@function.outer',
+              ['[c'] = '@class.outer',
+            },
+          },
         },
       }
     end,
@@ -410,25 +466,35 @@ return {
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
     },
-    opts = {},
-  },
-
-
-  -- Terminal integration
-  {
-    'akinsho/toggleterm.nvim',
-    version = '*',
-    config = true,
     opts = {
-      open_mapping = [[<c-\>]],
-      shade_terminals = true,
-      shading_factor = -80,
-      float_opts = {
-        border = 'curved',
-        winblend = 3,
-        highlights = {
-          border = 'Normal',
-          background = 'NormalFloat',
+      enable = true,
+      max_lines = 3,
+      on_attach = function(bufnr)
+        local ft = vim.bo[bufnr].filetype
+        return ft ~= 'markdown' and ft ~= 'yaml'
+      end,
+      patterns = {
+        default = {
+          'class',
+          'function',
+          'method',
+          'for',
+          'while',
+          'if',
+          'switch',
+          'case',
+        },
+        typescript = {
+          'class_declaration',
+          'abstract_class_declaration',
+          'interface_declaration',
+          'function_declaration',
+        },
+        rust = {
+          'impl_item',
+          'struct',
+          'enum',
+          'function',
         },
       },
     },
@@ -444,17 +510,32 @@ return {
   -- Visual tools
   {
     'folke/twilight.nvim',
+    cmd = 'Twilight',
+    keys = {
+      { '<leader>tw', '<cmd>Twilight<CR>', desc = 'Toggle Twilight' },
+    },
     opts = {},
   },
 
   -- Code outline
   {
     'stevearc/aerial.nvim',
+    cmd = { 'AerialToggle', 'AerialOpen', 'AerialClose', 'AerialNavToggle' },
+    keys = {
+      { '<leader>l', '<cmd>AerialToggle!<CR>', desc = 'Toggle Aerial' },
+    },
     opts = {},
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons',
     },
+    config = function(_, opts)
+      opts.on_attach = function(bufnr)
+        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr })
+        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
+      end
+      require('aerial').setup(opts)
+    end,
   },
 
   -- Marks navigation
@@ -477,6 +558,7 @@ return {
   -- LeetCode practice
   {
     'kawre/leetcode.nvim',
+    cmd = 'Leet',
     build = ':TSUpdate html',
     dependencies = {
       'nvim-telescope/telescope.nvim',
@@ -491,14 +573,32 @@ return {
     },
   },
 
-  -- Search and replace
-  'nvim-pack/nvim-spectre',
-
   -- Git diff viewer
-  'sindrets/diffview.nvim',
+  {
+    'sindrets/diffview.nvim',
+    cmd = {
+      'DiffviewOpen',
+      'DiffviewFileHistory',
+      'DiffviewClose',
+      'DiffviewToggleFiles',
+      'DiffviewFocusFiles',
+      'DiffviewRefresh',
+    },
+  },
 
   -- Tmux integration
-  'aserowy/tmux.nvim',
+  {
+    'aserowy/tmux.nvim',
+    event = 'VeryLazy',
+    cond = function()
+      return require('custom.tmux').is_available()
+    end,
+    opts = {
+      copy_sync = {
+        sync_clipboard = false,
+      },
+    },
+  },
 
   -- Lua development
   {
@@ -513,7 +613,7 @@ return {
   { 'Bilal2453/luvit-meta', lazy = true },
 
   -- Todo comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  { 'folke/todo-comments.nvim', event = { 'BufReadPost', 'BufNewFile' }, dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   -- Session management
   'tpope/vim-obsession',

@@ -80,6 +80,7 @@ if not vim.g.vscode then
   -- Setup all plugins
   require('custom.post_setup').setup()
 
+  package.loaded['config.keymaps'] = nil
   require('config.keymaps').setup()
 end
 

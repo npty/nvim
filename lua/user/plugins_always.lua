@@ -35,12 +35,7 @@ return {
     end,
   },
 
-  -- TreeSitter configuration moved to plugins_notvscode.lua to avoid conflicts
-
   -- Other always-loaded plugins from your config
-  {
-    'sheerun/vim-polyglot',
-  },
   'ojroques/vim-oscyank',
   'rust-lang/rust.vim',
   '0xmovses/move.vim',
