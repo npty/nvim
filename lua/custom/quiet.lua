@@ -8,9 +8,11 @@
 local M = {}
 
 -- Filetype entries keep visible diagnostics off for the buffer, and
--- `treesitter = true` also stops treesitter there. Server entries are the
--- `quiet = true` marks in custom.lsp_servers: the mark is where a server is
--- declared quiet, this is just the resolved view of it.
+-- `treesitter = true` also stops treesitter there. `servers` is the resolved
+-- view of the `quiet = true` marks in custom.lsp_servers -- the mark is where a
+-- server is declared quiet, and how M.server_config learns about it. This list
+-- is kept only so the whole policy can be read in one place; nothing else in
+-- the config consumes it.
 M.policy = {
   filetypes = {
     typescript = {},
@@ -29,9 +31,11 @@ end
 table.sort(M.policy.servers)
 
 -- A quiet server's diagnostics are dropped on arrival, in every buffer it
--- attaches to. That is deliberately wider than the filetype list above --
--- eslint and tailwindcss also attach to plain javascript -- so it stays a
--- per-server decision rather than a second reading of the filetypes.
+-- attaches to. That is deliberately wider than the filetype list above: ts_ls,
+-- eslint and tailwindcss also attach to plain javascript, which the filetype
+-- list leaves diagnostics-enabled. Keeping both in one list would silence less
+-- than today, so it stays a per-server decision rather than a second reading of
+-- the filetypes.
 local function drop_diagnostics() end
 
 -- Per-buffer mechanism for the filetype policy. Called from the autocmd in

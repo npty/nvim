@@ -110,8 +110,8 @@ vim.g.rust_fold = 1
 vim.opt.modeline = true
 vim.opt.modelines = 5
 
--- The filetypes kept free of visible diagnostics, and the servers whose
--- diagnostics are dropped, are declared in lua/custom/quiet.lua.
+-- The quiet filetypes live in lua/custom/quiet.lua, which also resolves the
+-- servers marked `quiet = true` in lua/custom/lsp_servers.lua.
 vim.api.nvim_create_autocmd({ 'FileType', 'BufEnter', 'LspAttach', 'DiagnosticChanged' }, {
   desc = 'Keep TS/Markdown/YAML buffers free of visible diagnostics',
   callback = function(args)
