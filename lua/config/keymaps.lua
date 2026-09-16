@@ -6,6 +6,10 @@ function M.setup()
   -- vim.g.mapleader = ' '
   -- vim.g.maplocalleader = ' '
 
+  -- Snacks is optional here: if it is missing (disabled or failed to install) the
+  -- snacks keymaps are skipped instead of aborting the rest of setup.
+  local has_snacks, snacks = pcall(require, 'snacks')
+
   -- Clear highlights on search when pressing <Esc> in normal mode
   vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
@@ -24,33 +28,36 @@ function M.setup()
   -- Save
   vim.keymap.set('n', '<leader>w', '<cmd>write<cr>', { desc = 'Save' })
 
-  -- NvimTree Toggle
-  vim.keymap.set('n', '<C-m>', function()
-    Snacks.explorer()
-  end, { desc = 'Toggle Explorer' })
-  -- Open explorer focused on current file
-  vim.keymap.set('n', '<leader>E', function()
-    Snacks.explorer.reveal()
-  end, { desc = 'Explorer (Current File)' })
+  if has_snacks then
+    -- File Explorer
+    vim.keymap.set('n', '<C-m>', function()
+      snacks.explorer()
+    end, { desc = 'Toggle Explorer' })
+    -- Open explorer focused on current file
+    vim.keymap.set('n', '<leader>E', function()
+      snacks.explorer.reveal()
+    end, { desc = 'Explorer (Current File)' })
 
-  -- Lazygit
-  vim.keymap.set('n', '<leader>gg', function()
-    Snacks.lazygit()
-  end, { desc = 'Toggle Lazygit' })
+    -- Lazygit
+    vim.keymap.set('n', '<leader>gg', function()
+      snacks.lazygit()
+    end, { desc = 'Toggle Lazygit' })
 
-  -- Terminal
-  vim.keymap.set('n', '<leader>tt', function()
-    Snacks.terminal()
-  end, { desc = 'Toggle Terminal' })
+    -- Terminal
+    vim.keymap.set('n', '<leader>tt', function()
+      snacks.terminal()
+    end, { desc = 'Toggle Terminal' })
 
-  -- Git
-  vim.keymap.set('n', '<leader>bl', function()
-    Snacks.git.blame_line()
-  end, { desc = 'Git Blame Line' })
+    -- Git
+    vim.keymap.set('n', '<leader>bl', function()
+      snacks.git.blame_line()
+    end, { desc = 'Git Blame Line' })
+  end
 
   -- Split management
   vim.keymap.set('n', '<leader>vs', ':vsplit<CR>', { desc = 'Vertical Split' })
   vim.keymap.set('n', '<leader>hs', ':split<CR>', { desc = 'Horizontal Split' })
+
   local function navigate_pane(direction, tmux_direction)
     local current_win = vim.api.nvim_get_current_win()
     vim.cmd('wincmd ' .. direction)
@@ -77,30 +84,20 @@ function M.setup()
     end)
   end
 
-  vim.keymap.set('n', '<C-h>', function()
-    navigate_pane('h', 'L')
-  end, { desc = 'Move to left pane' })
-  vim.keymap.set('n', '<C-j>', function()
-    navigate_pane('j', 'D')
-  end, { desc = 'Move to lower pane' })
-  vim.keymap.set('n', '<C-k>', function()
-    navigate_pane('k', 'U')
-  end, { desc = 'Move to upper pane' })
-  vim.keymap.set('n', '<C-l>', function()
-    navigate_pane('l', 'R')
-  end, { desc = 'Move to right pane' })
-  vim.keymap.set('t', '<C-h>', function()
-    navigate_terminal_pane('h', 'L')
-  end, { desc = 'Move to left pane' })
-  vim.keymap.set('t', '<C-j>', function()
-    navigate_terminal_pane('j', 'D')
-  end, { desc = 'Move to lower pane' })
-  vim.keymap.set('t', '<C-k>', function()
-    navigate_terminal_pane('k', 'U')
-  end, { desc = 'Move to upper pane' })
-  vim.keymap.set('t', '<C-l>', function()
-    navigate_terminal_pane('l', 'R')
-  end, { desc = 'Move to right pane' })
+  -- Pane focus: Neovim's windows get the key first, tmux only if no window was left to move to.
+  for _, pane in ipairs {
+    { dir = 'h', tmux = 'L', desc = 'Move to left pane' },
+    { dir = 'j', tmux = 'D', desc = 'Move to lower pane' },
+    { dir = 'k', tmux = 'U', desc = 'Move to upper pane' },
+    { dir = 'l', tmux = 'R', desc = 'Move to right pane' },
+  } do
+    vim.keymap.set('n', '<C-' .. pane.dir .. '>', function()
+      navigate_pane(pane.dir, pane.tmux)
+    end, { desc = pane.desc })
+    vim.keymap.set('t', '<C-' .. pane.dir .. '>', function()
+      navigate_terminal_pane(pane.dir, pane.tmux)
+    end, { desc = pane.desc })
+  end
 
   -- Tab management
   vim.keymap.set('n', '<C-t>', ':tabnew<CR>', { desc = 'New Tab' })
@@ -166,39 +163,40 @@ function M.setup()
   -- Snacks.notifier Keymaps
   -- ========================================
 
-  local snacks = require 'snacks'
+  if has_snacks then
+    -- Show notification history
+    vim.keymap.set('n', '<leader>nh', function()
+      snacks.notifier.show_history()
+    end, { desc = '[N]otification [H]istory' })
 
-  -- Show notification history
-  vim.keymap.set('n', '<leader>nh', function()
-    snacks.notifier.show_history()
-  end, { desc = '[N]otification [H]istory' })
-
-  -- Clear all notifications
-  vim.keymap.set('n', '<leader>nd', function()
-    -- Loop through all active notifications and hide them
-    local history = snacks.notifier.get_history()
-    for _, notif in ipairs(history) do
-      if not notif.hidden then
-        snacks.notifier.hide(notif.id)
+    -- Clear all notifications
+    vim.keymap.set('n', '<leader>nd', function()
+      -- Loop through all active notifications and hide them
+      local history = snacks.notifier.get_history()
+      for _, notif in ipairs(history) do
+        if not notif.hidden then
+          snacks.notifier.hide(notif.id)
+        end
       end
-    end
-  end, { desc = '[N]otification [D]ismiss All' })
+    end, { desc = '[N]otification [D]ismiss All' })
 
-  -- Filter notifications by level
-  vim.keymap.set('n', '<leader>ne', function()
-    snacks.notifier.show_history { filter = 'error' }
-  end, { desc = '[N]otification [E]rrors Only' })
+    -- Filter notifications by level
+    vim.keymap.set('n', '<leader>ne', function()
+      snacks.notifier.show_history { filter = 'error' }
+    end, { desc = '[N]otification [E]rrors Only' })
 
-  vim.keymap.set('n', '<leader>nw', function()
-    snacks.notifier.show_history { filter = 'warn' }
-  end, { desc = '[N]otification [W]arnings Only' })
+    vim.keymap.set('n', '<leader>nw', function()
+      snacks.notifier.show_history { filter = 'warn' }
+    end, { desc = '[N]otification [W]arnings Only' })
+  end
 
   -- Set the keymaps with larger resize steps
   vim.api.nvim_set_keymap('n', '<C-w>>', '10<C-w>>', { noremap = true })
   vim.api.nvim_set_keymap('n', '<C-w><', '10<C-w><', { noremap = true })
 
-  -- Treesitter context
-  vim.keymap.set('n', '[c', function()
+  -- Treesitter context. '[c' belongs to the class textobject, so the context jump
+  -- sits on the free sibling '[C'.
+  vim.keymap.set('n', '[C', function()
     require('treesitter-context').go_to_context()
   end, { silent = true, desc = 'Go to context' })
 
@@ -208,65 +206,67 @@ function M.setup()
 
   -- Snacks picker
   --
-  vim.keymap.set('n', '<leader>sh', function()
-    Snacks.picker.help()
-  end, { desc = '[S]earch [H]elp' })
-  vim.keymap.set('n', '<leader>sk', function()
-    Snacks.picker.keymaps()
-  end, { desc = '[S]earch [K]eymaps' })
-  vim.keymap.set('n', '<leader>sf', function()
-    Snacks.picker.files()
-  end, { desc = '[S]earch [F]iles' })
-  vim.keymap.set('n', '<leader>ss', function()
-    Snacks.picker.pickers()
-  end, { desc = '[S]earch [S]elect Pickers' })
-  vim.keymap.set('n', '<leader>sw', function()
-    Snacks.picker.grep_word()
-  end, { desc = '[S]earch current [W]ord' })
-  vim.keymap.set('n', '<leader>sg', function()
-    Snacks.picker.grep { live = true }
-  end, { desc = '[S]earch by [G]rep' })
-  vim.keymap.set('n', '<leader>st', function()
-    Snacks.picker.grep { live = true, ft = { 'ts' } }
-  end, { desc = '[S]earch by [G]rep Typescript' })
-  vim.keymap.set('n', '<leader>sj', function()
-    Snacks.picker.grep { live = true, ft = { 'json' } }
-  end, { desc = '[S]earch by [G]rep JSON' })
-  vim.keymap.set('n', '<leader>sd', function()
-    Snacks.picker.diagnostics()
-  end, { desc = '[S]earch [D]iagnostics' })
-  vim.keymap.set('n', '<leader>sr', function()
-    Snacks.picker.resume()
-  end, { desc = '[S]earch [R]esume' })
-  vim.keymap.set('n', '<leader>rf', function()
-    Snacks.picker.recent()
-  end, { desc = '[S]earch Recent Files ("." for repeat)' })
-  vim.keymap.set('n', '<leader><leader>', function()
-    Snacks.picker.buffers()
-  end, { desc = '[ ] Find existing buffers' })
-  vim.keymap.set('n', '<leader>dg', function()
-    Snacks.picker.git_diff()
-  end, { desc = 'Git Diff (Hunks)' })
-  vim.keymap.set('n', '<leader>gl', function()
-    Snacks.picker.git_log()
-  end, { desc = 'Git Log' })
+  if has_snacks then
+    vim.keymap.set('n', '<leader>sh', function()
+      snacks.picker.help()
+    end, { desc = '[S]earch [H]elp' })
+    vim.keymap.set('n', '<leader>sk', function()
+      snacks.picker.keymaps()
+    end, { desc = '[S]earch [K]eymaps' })
+    vim.keymap.set('n', '<leader>sf', function()
+      snacks.picker.files()
+    end, { desc = '[S]earch [F]iles' })
+    vim.keymap.set('n', '<leader>ss', function()
+      snacks.picker.pickers()
+    end, { desc = '[S]earch [S]elect Pickers' })
+    vim.keymap.set('n', '<leader>sw', function()
+      snacks.picker.grep_word()
+    end, { desc = '[S]earch current [W]ord' })
+    vim.keymap.set('n', '<leader>sg', function()
+      snacks.picker.grep { live = true }
+    end, { desc = '[S]earch by [G]rep' })
+    vim.keymap.set('n', '<leader>st', function()
+      snacks.picker.grep { live = true, ft = { 'ts' } }
+    end, { desc = '[S]earch by [G]rep Typescript' })
+    vim.keymap.set('n', '<leader>sj', function()
+      snacks.picker.grep { live = true, ft = { 'json' } }
+    end, { desc = '[S]earch by [G]rep JSON' })
+    vim.keymap.set('n', '<leader>sd', function()
+      snacks.picker.diagnostics()
+    end, { desc = '[S]earch [D]iagnostics' })
+    vim.keymap.set('n', '<leader>sr', function()
+      snacks.picker.resume()
+    end, { desc = '[S]earch [R]esume' })
+    vim.keymap.set('n', '<leader>rf', function()
+      snacks.picker.recent()
+    end, { desc = '[S]earch Recent Files ("." for repeat)' })
+    vim.keymap.set('n', '<leader><leader>', function()
+      snacks.picker.buffers()
+    end, { desc = '[ ] Find existing buffers' })
+    vim.keymap.set('n', '<leader>dg', function()
+      snacks.picker.git_diff()
+    end, { desc = 'Git Diff (Hunks)' })
+    vim.keymap.set('n', '<leader>gl', function()
+      snacks.picker.git_log()
+    end, { desc = 'Git Log' })
 
-  -- Slightly advanced example - current buffer search
-  vim.keymap.set('n', '<leader>/', function()
-    -- Snacks implementation of current buffer fuzzy find
-    Snacks.picker.lines {
-      layout = {
-        preset = 'vscode', -- similar to dropdown in telescope
-      },
-    }
-  end, { desc = '[/] Fuzzily search in current buffer' })
+    -- Slightly advanced example - current buffer search
+    vim.keymap.set('n', '<leader>/', function()
+      -- Snacks implementation of current buffer fuzzy find
+      snacks.picker.lines {
+        layout = {
+          preset = 'vscode', -- similar to dropdown in telescope
+        },
+      }
+    end, { desc = '[/] Fuzzily search in current buffer' })
 
-  -- Searching in open files
-  vim.keymap.set('n', '<leader>s/', function()
-    Snacks.picker.grep_buffers {
-      prompt = 'Live Grep in Open Files', -- equivalent to prompt_title
-    }
-  end, { desc = '[S]earch [/] in Open Files' })
+    -- Searching in open files
+    vim.keymap.set('n', '<leader>s/', function()
+      snacks.picker.grep_buffers {
+        prompt = 'Live Grep in Open Files', -- equivalent to prompt_title
+      }
+    end, { desc = '[S]earch [/] in Open Files' })
+  end
 
   -- LSP KEYBINDINGS
   -- This function will be used in your LspAttach autocmd
@@ -276,24 +276,26 @@ function M.setup()
     end
 
     -- Replace Telescope LSP functions with Snacks
-    map('gd', function()
-      -- Configure lsp_definitions to immediately jump when there's only one result
-      Snacks.picker.lsp_definitions {
-        unique_lines = true,
-      }
-    end, '[G]oto [D]efinition')
-    map('gr', function()
-      Snacks.picker.lsp_references()
-    end, '[G]oto [R]eferences')
-    map('gI', function()
-      Snacks.picker.lsp_implementations()
-    end, '[G]oto [I]mplementation')
-    map('<leader>D', function()
-      Snacks.picker.lsp_type_definitions()
-    end, 'Type [D]efinition')
-    map('<leader>ds', function()
-      Snacks.picker.lsp_symbols()
-    end, '[D]ocument [S]ymbols')
+    if has_snacks then
+      map('gd', function()
+        -- Configure lsp_definitions to immediately jump when there's only one result
+        snacks.picker.lsp_definitions {
+          unique_lines = true,
+        }
+      end, '[G]oto [D]efinition')
+      map('gr', function()
+        snacks.picker.lsp_references()
+      end, '[G]oto [R]eferences')
+      map('gI', function()
+        snacks.picker.lsp_implementations()
+      end, '[G]oto [I]mplementation')
+      map('<leader>D', function()
+        snacks.picker.lsp_type_definitions()
+      end, 'Type [D]efinition')
+      map('<leader>ds', function()
+        snacks.picker.lsp_symbols()
+      end, '[D]ocument [S]ymbols')
+    end
 
     -- Keep the same non-picker LSP bindings
     map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
@@ -340,15 +342,17 @@ function M.setup()
     callback = setup_lsp_keymaps,
   })
 
-  vim.keymap.set('n', '<leader>u', function()
-    Snacks.picker.undo()
-  end, { desc = 'Undo History' })
-  vim.keymap.set('n', '<leader>m', function()
-    Snacks.picker.marks()
-  end, { desc = 'Jump to Mark' })
-  vim.keymap.set('n', '<leader>gb', function()
-    Snacks.picker.git_branches()
-  end, { desc = 'Git Branches' })
+  if has_snacks then
+    vim.keymap.set('n', '<leader>u', function()
+      snacks.picker.undo()
+    end, { desc = 'Undo History' })
+    vim.keymap.set('n', '<leader>m', function()
+      snacks.picker.marks()
+    end, { desc = 'Jump to Mark' })
+    vim.keymap.set('n', '<leader>gb', function()
+      snacks.picker.git_branches()
+    end, { desc = 'Git Branches' })
+  end
 end
 
 return M
