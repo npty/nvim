@@ -13,6 +13,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Must load before plugins: plugin specs below read the globals it sets
+-- (e.g. `vim.g.have_nerd_font`, `vim.g.rust_fold`, `vim.g.loaded_netrw`).
+require 'config.options'
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -47,7 +51,6 @@ require('lazy').setup({
   },
 })
 
-require 'config.options'
 -- Set colorscheme
 vim.cmd.colorscheme 'neofusion'
 
