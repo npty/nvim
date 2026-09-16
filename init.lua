@@ -13,6 +13,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Must run before `lazy.setup` below: lazy's `ui.icons` config reads
+-- `vim.g.have_nerd_font`, which this file sets.
+require 'config.options'
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -47,7 +51,6 @@ require('lazy').setup({
   },
 })
 
-require 'config.options'
 -- Set colorscheme
 vim.cmd.colorscheme 'neofusion'
 
