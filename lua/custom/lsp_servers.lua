@@ -3,8 +3,8 @@
 
 local M = {}
 
-local quiet_diagnostic_handler = function() end
-
+-- `quiet = true` marks a server whose diagnostics custom/quiet.lua drops in every
+-- buffer; the handler itself lives there. Never hand-copy one into a server.
 M.servers = {
   -- clangd = {},
   -- gopls = {},
@@ -17,9 +17,7 @@ M.servers = {
   --
   -- But for many setups, the LSP (`tsserver`) will work just fine
   ts_ls = {
-    handlers = {
-      ['textDocument/publishDiagnostics'] = quiet_diagnostic_handler,
-    },
+    quiet = true,
   },
 
   solidity_ls = {},
@@ -44,9 +42,7 @@ M.servers = {
   },
 
   eslint = {
-    handlers = {
-      ['textDocument/publishDiagnostics'] = quiet_diagnostic_handler,
-    },
+    quiet = true,
   },
 
   tailwindcss = {
@@ -61,9 +57,7 @@ M.servers = {
       'svelte',
       'vue',
     },
-    handlers = {
-      ['textDocument/publishDiagnostics'] = quiet_diagnostic_handler,
-    },
+    quiet = true,
   },
 
   jsonls = {},
@@ -80,9 +74,7 @@ M.servers = {
   },
 
   marksman = {
-    handlers = {
-      ['textDocument/publishDiagnostics'] = quiet_diagnostic_handler,
-    },
+    quiet = true,
   },
 
   prismals = {},
