@@ -149,16 +149,10 @@ function M.setup()
   -- Git browser
   vim.keymap.set('n', '<leader>gh', ':GBrowse<CR>', { desc = 'Git Browse' })
 
-  -- Toggle Diff View
-  vim.keymap.set('n', '<leader>dv', ':DiffviewOpen<CR>', { desc = 'Diff View Open' })
-
   -- Osc Yank
   vim.keymap.set('n', '<leader>c', '<Plug>OSCYankOperator')
   vim.keymap.set('n', '<leader>cc', '<leader>c_', { remap = true })
   vim.keymap.set('v', '<leader>c', '<Plug>OSCYankVisual')
-
-  -- Folding
-  vim.keymap.set('n', '<leader>A', '<cmd>set foldmethod?^foldmethod<CR>', { desc = 'set or clear the current foldmethod' })
 
   -- Add missing imports
   vim.api.nvim_set_keymap(
@@ -172,69 +166,41 @@ function M.setup()
   -- Snacks.notifier Keymaps
   -- ========================================
 
-  -- Check if Snacks.notifier is available
-  local snacks_available, snacks = pcall(require, 'snacks')
-  if snacks_available then
-    -- Show notification history (overrides Noice history)
-    vim.keymap.set('n', '<leader>nh', function()
-      snacks.notifier.show_history()
-    end, { desc = '[N]otification [H]istory' })
+  local snacks = require 'snacks'
 
-    -- Clear all notifications (overrides the Noice dismiss)
-    vim.keymap.set('n', '<leader>nd', function()
-      -- Loop through all active notifications and hide them
-      local history = snacks.notifier.get_history()
-      for _, notif in ipairs(history) do
-        if not notif.hidden then
-          snacks.notifier.hide(notif.id)
-        end
+  -- Show notification history
+  vim.keymap.set('n', '<leader>nh', function()
+    snacks.notifier.show_history()
+  end, { desc = '[N]otification [H]istory' })
+
+  -- Clear all notifications
+  vim.keymap.set('n', '<leader>nd', function()
+    -- Loop through all active notifications and hide them
+    local history = snacks.notifier.get_history()
+    for _, notif in ipairs(history) do
+      if not notif.hidden then
+        snacks.notifier.hide(notif.id)
       end
-    end, { desc = '[N]otification [D]ismiss All' })
+    end
+  end, { desc = '[N]otification [D]ismiss All' })
 
-    -- Filter notifications by level
-    vim.keymap.set('n', '<leader>ne', function()
-      snacks.notifier.show_history { filter = 'error' }
-    end, { desc = '[N]otification [E]rrors Only' })
+  -- Filter notifications by level
+  vim.keymap.set('n', '<leader>ne', function()
+    snacks.notifier.show_history { filter = 'error' }
+  end, { desc = '[N]otification [E]rrors Only' })
 
-    vim.keymap.set('n', '<leader>nw', function()
-      snacks.notifier.show_history { filter = 'warn' }
-    end, { desc = '[N]otification [W]arnings Only' })
-
-    -- Create a test notification (useful for testing styles)
-    vim.keymap.set('n', '<leader>nt', function()
-      snacks.notifier.notify("This is a test notification with ID 'test'", 'info', {
-        title = 'Test Notification',
-        id = 'test',
-      })
-    end, { desc = '[N]otification [T]est' })
-
-    -- Update the test notification (demonstrates replacing notifications)
-    vim.keymap.set('n', '<leader>nu', function()
-      snacks.notifier.notify('This notification replaced the previous test notification', 'warn', {
-        title = 'Updated Notification',
-        id = 'test', -- Same ID as the test notification to replace it
-      })
-    end, { desc = '[N]otification [U]pdate Test' })
-  end
+  vim.keymap.set('n', '<leader>nw', function()
+    snacks.notifier.show_history { filter = 'warn' }
+  end, { desc = '[N]otification [W]arnings Only' })
 
   -- Set the keymaps with larger resize steps
   vim.api.nvim_set_keymap('n', '<C-w>>', '10<C-w>>', { noremap = true })
   vim.api.nvim_set_keymap('n', '<C-w><', '10<C-w><', { noremap = true })
 
-  -- Noice history
-  -- vim.keymap.set('n', '<leader>nh', ':Noice history<CR>', { desc = 'Noice History' })
-  -- vim.keymap.set('n', '<leader>nd', ':Noice dismiss<CR>', { desc = 'Dismiss All' })
-
-  -- Theme switcher
-  -- vim.keymap.set('n', '<leader>th', '<cmd>Telescope colorscheme enable_preview=true<CR>', { desc = 'Theme switcher' })
-
   -- Treesitter context
   vim.keymap.set('n', '[c', function()
     require('treesitter-context').go_to_context()
   end, { silent = true, desc = 'Go to context' })
-
-  -- Reload nvim config
-  vim.keymap.set('n', '<leader>sr', ':Lazy reload *<CR>', { silent = true, desc = 'Reload config' })
 
   -- Auto suggestion function signature
   vim.keymap.set('n', '<leader>k', vim.lsp.buf.signature_help, { silent = true, desc = 'Signature Help' })
@@ -265,7 +231,7 @@ function M.setup()
   end, { desc = '[S]earch by [G]rep Typescript' })
   vim.keymap.set('n', '<leader>sj', function()
     Snacks.picker.grep { live = true, ft = { 'json' } }
-  end, { desc = '[S]earch by [G]rep Typescript' })
+  end, { desc = '[S]earch by [G]rep JSON' })
   vim.keymap.set('n', '<leader>sd', function()
     Snacks.picker.diagnostics()
   end, { desc = '[S]earch [D]iagnostics' })

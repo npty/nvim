@@ -1,14 +1,12 @@
 -- user/plugins_always.lua
--- Plugins that should load in both regular Neovim and VSCode
+-- Plugins that load at startup in every environment
 
 return {
-  -- Core plugins that enhance Vim functionality in any environment
-  -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  -- Core plugins that enhance Vim functionality
   'tpope/vim-fugitive', -- Git integration
   'tpope/vim-rhubarb', -- GitHub integration
 
-  -- Navigation and editing improvements useful in any environment
-  'gpanders/editorconfig.nvim', -- EditorConfig support
+  -- Navigation and editing improvements
   {
     'kylechui/nvim-surround',
     version = '*', -- Use for stability; omit to use `main` branch for the latest features
@@ -26,12 +24,18 @@ return {
     -- use opts = {} for passing setup options
     -- this is equivalent to setup({}) function
   },
-  -- Mini.nvim modules that are useful in any environment
   {
     'echasnovski/mini.nvim',
     config = function()
-      -- Only load the modules that make sense in any environment
       require('mini.ai').setup { n_lines = 500 } -- Better text objects
+
+      local statusline = require 'mini.statusline'
+      statusline.setup { use_icons = vim.g.have_nerd_font }
+
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_location = function()
+        return '%2l:%-2v'
+      end
     end,
   },
 

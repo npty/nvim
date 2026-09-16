@@ -1,10 +1,8 @@
 -- ~/.config/nvim/lua/user/plugins_notvscode.lua
--- Plugins for regular Neovim only (not in VSCode)
---
-require('./custom.env').load_env()
+-- Plugins loaded after the always-on set
 
 return {
-  -- UI enhancements (only make sense in regular Neovim)
+  -- UI enhancements
 
   {
     'diegoulloao/neofusion.nvim',
@@ -168,44 +166,7 @@ return {
     },
   },
 
-  -- Status line (doesn't work in VSCode)
-  {
-    'echasnovski/mini.nvim',
-    config = function()
-      -- Additional mini modules for non-VSCode environment
-      local statusline = require 'mini.statusline'
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
-      -- Mini pick for file selection
-      local height = math.floor(vim.o.lines * 0.7)
-      local width = math.floor(vim.o.columns * 0.7)
-      local row = math.floor((vim.o.lines - height) / 2)
-      local col = math.floor((vim.o.columns - width) / 2)
-
-      require('mini.pick').setup {
-        window = {
-          config = {
-            height = height,
-            width = width,
-            row = row,
-            col = col,
-            border = 'rounded',
-          },
-        },
-      }
-      vim.ui.select = require('snacks').picker.select
-    end,
-  },
-
-  -- File explorer and navigation
-  -- 'nvim-tree/nvim-tree.lua',
-
-  -- LSP and completion (doesn't make sense in VSCode)
+  -- LSP and completion
   {
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
@@ -324,30 +285,6 @@ return {
     },
   },
 
-  -- Telescope for fuzzy finding (UI-dependent)
-  -- {
-  --   'nvim-telescope/telescope.nvim',
-  --   event = 'VimEnter',
-  --   branch = '0.1.x',
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim',
-  --     { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-  --     { 'nvim-telescope/telescope-ui-select.nvim' },
-  --     { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
-  --   },
-  -- },
-
-  -- Debugging tools
-  {
-    'mfussenegger/nvim-dap',
-    dependencies = {
-      'rcarriga/nvim-dap-ui',
-      'nvim-neotest/nvim-nio',
-      'theHamsta/nvim-dap-virtual-text',
-      'mxsdev/nvim-dap-vscode-js',
-    },
-  },
-
   -- UI enhancements
   {
     'folke/trouble.nvim',
@@ -360,16 +297,6 @@ return {
     config = true,
     event = 'VeryLazy',
   },
-
-  -- Enhanced UI for messages, cmdline and popups
-  -- {
-  --   'folke/noice.nvim',
-  --   event = 'VeryLazy',
-  --   dependencies = {
-  --     'MunifTanjim/nui.nvim',
-  --     'rcarriga/nvim-notify',
-  --   },
-  -- },
 
   -- Git integration
   {
@@ -538,54 +465,6 @@ return {
     end,
   },
 
-  -- Marks navigation
-  {
-    'chentoast/marks.nvim',
-    event = 'VeryLazy',
-    opts = {},
-  },
-
-  -- Github integration
-  -- {
-  --   'pwntester/octo.nvim',
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim',
-  --     'nvim-telescope/telescope.nvim',
-  --     'nvim-tree/nvim-web-devicons',
-  --   },
-  -- },
-
-  -- LeetCode practice
-  {
-    'kawre/leetcode.nvim',
-    cmd = 'Leet',
-    build = ':TSUpdate html',
-    dependencies = {
-      'nvim-telescope/telescope.nvim',
-      'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
-      'nvim-treesitter/nvim-treesitter',
-      'rcarriga/nvim-notify',
-      'nvim-tree/nvim-web-devicons',
-    },
-    opts = {
-      lang = 'typescript',
-    },
-  },
-
-  -- Git diff viewer
-  {
-    'sindrets/diffview.nvim',
-    cmd = {
-      'DiffviewOpen',
-      'DiffviewFileHistory',
-      'DiffviewClose',
-      'DiffviewToggleFiles',
-      'DiffviewFocusFiles',
-      'DiffviewRefresh',
-    },
-  },
-
   -- Tmux integration
   {
     'aserowy/tmux.nvim',
@@ -677,14 +556,6 @@ return {
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
-        -- compat = { 'supermaven' },
-        -- providers = {
-        --   supermaven = {
-        --     kind = 'Supermaven',
-        --     score_offset = 100,
-        --     async = true,
-        --   },
-        -- },
       },
 
       -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
