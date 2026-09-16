@@ -14,11 +14,11 @@ A modern Neovim configuration optimized for TypeScript and blockchain developmen
 
 ## 📋 Prerequisites
 
-- Neovim >= 0.9.0
+- Neovim >= 0.11
 - Git
 - Node.js (for TypeScript/JavaScript LSP)
-- ripgrep (for Telescope file searching)
-- fd (for Telescope file searching)
+- ripgrep (live grep via snacks.picker)
+- fd (file finding via snacks.picker)
 - A Nerd Font (recommended for icons)
 
 ### System Dependencies
@@ -51,7 +51,7 @@ mv ~/.config/nvim ~/.config/nvim.bak
 2. Clone this configuration:
 
 ```bash
-git clone https://github.com/npty/nvim-config.git ~/.config/nvim
+git clone https://github.com/npty/nvim.git ~/.config/nvim
 ```
 
 3. Start Neovim:
@@ -68,63 +68,7 @@ The configuration will automatically:
 
 ## ⌨️ Key Mappings
 
-Common keymaps are listed below. For a complete list, use which-key or `<leader>sk`.
-
-### Essential Mappings
-
-- `<Space>` - Leader key
-- `jk` - Exit insert mode
-- `<C-\>` - Toggle terminal
-- `<C-m>` - Toggle file tree
-- `<leader>f` - Format buffer
-
-### Quick Navigation
-
-- `<leader>sf` - Search files
-- `<leader>sg` - Live grep
-- `<leader>/` - Fuzzy find in current buffer
-
-## 📦 Major Plugins
-
-- **LSP Support**
-
-  - nvim-lspconfig
-  - mason.nvim
-  - mason-lspconfig.nvim
-  - nvim-cmp
-
-- **Syntax and Navigation**
-
-  - nvim-treesitter
-  - nvim-treesitter-textobjects
-  - nvim-treesitter-context
-  - telescope.nvim
-
-- **Git Integration**
-
-  - gitsigns.nvim
-  - vim-fugitive
-
-- **UI Enhancements**
-
-  - noice.nvim
-  - trouble.nvim
-  - aerial.nvim
-  - which-key.nvim
-
-- **File Management**
-  - nvim-tree.lua
-  - telescope.nvim
-
-## 🎨 Appearance
-
-The configuration uses the Neofusion color scheme by default. UI elements include:
-
-- Status line with essential information
-- Git decorations in the sign column
-- LSP diagnostics with icons
-- Indent guides
-- File tree with icons
+For the complete list, use which-key or `<leader>sk`.
 
 ## 📱 Terminal Integration
 
@@ -147,7 +91,7 @@ The configuration uses the Neofusion color scheme by default. UI elements includ
 - Support for:
   - TypeScript/JavaScript (prettier)
   - Lua (stylua)
-  - Rust (rustfmt)
+  - Rust (rust-analyzer LSP fallback)
   - Python (black, isort)
 
 ## ⚡ Performance
@@ -156,17 +100,17 @@ The configuration is optimized for performance:
 
 - Lazy loading of plugins
 - Efficient plugin configurations
-- Limited diagnostics in large files
+- Visible diagnostics suppressed per filetype
 - Smart handling of file indexing
 
 ## 🛠️ Customization
 
 To customize the configuration:
 
-1. Add new plugins in `lua/plugins/*`
+1. Add new plugins in `lua/plugins.lua`
 2. Modify keymaps in the main configuration
 3. Adjust LSP settings in the lspconfig setup
-4. Update UI preferences in respective plugin configurations
+4. Change the default Neofusion color scheme in `init.lua`
 
 ## 📝 Tips
 
@@ -188,15 +132,9 @@ Common issues and solutions:
    - Run `:Mason` and check if servers are installed
    - Check `:LspInfo` for server status
 
-3. **Search not working**
-
-   - Ensure ripgrep is installed
-   - Check Telescope health with `:checkhealth telescope`
-
-4. **Performance issues**
+3. **Performance issues**
    - Update plugins and Neovim
    - Check `:checkhealth` for any warnings
-   - Consider adjusting LSP settings for large files
 
 ## 📚 Resources
 
