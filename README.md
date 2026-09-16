@@ -91,7 +91,7 @@ For the complete list, use which-key or `<leader>sk`.
 - Support for:
   - TypeScript/JavaScript (prettier)
   - Lua (stylua)
-  - Rust (rustfmt)
+  - Rust (rust-analyzer LSP fallback)
   - Python (black, isort)
 
 ## ⚡ Performance
@@ -100,7 +100,7 @@ The configuration is optimized for performance:
 
 - Lazy loading of plugins
 - Efficient plugin configurations
-- Limited diagnostics in large files
+- Visible diagnostics suppressed per filetype
 - Smart handling of file indexing
 
 ## 🛠️ Customization
@@ -110,6 +110,7 @@ To customize the configuration:
 1. Add new plugins in `lua/plugins.lua`
 2. Modify keymaps in the main configuration
 3. Adjust LSP settings in the lspconfig setup
+4. Change the default Neofusion color scheme in `init.lua`
 
 ## 📝 Tips
 
@@ -134,7 +135,6 @@ Common issues and solutions:
 3. **Performance issues**
    - Update plugins and Neovim
    - Check `:checkhealth` for any warnings
-   - Consider adjusting LSP settings for large files
 
 ## 📚 Resources
 
