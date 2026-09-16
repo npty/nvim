@@ -13,8 +13,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- Must load before plugins: plugin specs below read the globals it sets
--- (e.g. `vim.g.have_nerd_font`, `vim.g.rust_fold`, `vim.g.loaded_netrw`).
+-- Must run before `lazy.setup` below: lazy's `ui.icons` config reads
+-- `vim.g.have_nerd_font`, which this file sets.
 require 'config.options'
 
 -- [[ Install `lazy.nvim` plugin manager ]]
