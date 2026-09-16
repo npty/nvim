@@ -110,41 +110,12 @@ vim.g.rust_fold = 1
 vim.opt.modeline = true
 vim.opt.modelines = 5
 
--- Filetypes kept free of visible diagnostics. Entries marked `treesitter` also
--- have treesitter stopped for the buffer.
-local quiet_diagnostic_filetypes = {
-  typescript = {},
-  typescriptreact = {},
-  markdown = { treesitter = true },
-  yaml = { treesitter = true },
-}
-
-local function quiet_diagnostics(bufnr)
-  local quiet = quiet_diagnostic_filetypes[vim.bo[bufnr].filetype]
-  if not quiet then
-    return
-  end
-
-  vim.diagnostic.enable(false, { bufnr = bufnr })
-
-  if quiet.treesitter then
-    vim.api.nvim_buf_call(bufnr, function()
-      pcall(vim.treesitter.stop)
-    end)
-    vim.schedule(function()
-      if vim.api.nvim_buf_is_valid(bufnr) then
-        vim.api.nvim_buf_call(bufnr, function()
-          pcall(vim.treesitter.stop)
-        end)
-      end
-    end)
-  end
-end
-
+-- The filetypes kept free of visible diagnostics, and the servers whose
+-- diagnostics are dropped, are declared in lua/custom/quiet.lua.
 vim.api.nvim_create_autocmd({ 'FileType', 'BufEnter', 'LspAttach', 'DiagnosticChanged' }, {
   desc = 'Keep TS/Markdown/YAML buffers free of visible diagnostics',
   callback = function(args)
-    quiet_diagnostics(args.buf)
+    require('custom.quiet').apply(args.buf)
   end,
 })
 
