@@ -1,8 +1,15 @@
-***************************************************************************
-**NOTE**
-Please verify that the `base repository` above has the intended destination!
-Github by default opens Pull Requests against the parent of a forked repository.
-If this is your personal fork and you didn't intend to open a PR for contribution
-to the original project then adjust the `base repository` accordingly.
-**************************************************************************
+# Summary
 
+<!-- One-line brief explanation of what this PR does. -->
+
+## Why
+
+<!-- Per change: why we introduce it, 1-2 sentences per bullet point. -->
+
+## How
+
+<!-- How the changes are implemented. -->
+
+## Testing
+
+<!-- How it is tested. -->
