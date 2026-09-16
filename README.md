@@ -40,35 +40,6 @@ These are required for:
 - **unzip** - Installing stylua and other binary tools
 - **python3-venv** - Installing Python-based formatters (black, isort)
 
-## 🔒 Environment Variables
-
-This configuration uses several environment variables for API keys and secrets. Create a `.env` file in your Neovim config directory and add your keys:
-
-### Required Environment Variables
-
-| Variable           | Description                      | Used By                         |
-| ------------------ | -------------------------------- | ------------------------------- |
-| `DEEPSEEK_API_KEY` | API key for DeepSeek AI services | avante.nvim, codecompanion.nvim |
-
-### Optional Environment Variables
-
-| Variable         | Description                          | Default |
-| ---------------- | ------------------------------------ | ------- |
-| `TSS_MAX_MEMORY` | Maximum memory for TypeScript server | 4096    |
-
-### Loading Environment Variables
-
-1. Create a `.env` file in your Neovim config directory
-2. Add your environment variables
-3. Use one of these methods to load them:
-
-#### Option 1: Direct in Shell
-
-```bash
-export DEEPSEEK_API_KEY="your-key-here"
-nvim
-```
-
 ## 🔧 Installation
 
 1. Backup your existing Neovim configuration:
@@ -97,7 +68,7 @@ The configuration will automatically:
 
 ## ⌨️ Key Mappings
 
-Common keymaps are listed below. For a complete list of all keybindings, see [KEYMAPS.md](./KEYMAPS.md).
+Common keymaps are listed below. For a complete list, use which-key or `<leader>sk`.
 
 ### Essential Mappings
 

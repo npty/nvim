@@ -49,6 +49,11 @@ vim.opt.wildignore:append {
   'build/*',
   '*.min.js',
   '*.d.ts',
+  '*/node_modules/*',
+  '*/.git/*',
+  '*/target/*',
+  '*/dist/*',
+  '*/build/*',
 }
 
 -- Keep signcolumn on by default
@@ -56,16 +61,8 @@ vim.opt.signcolumn = 'yes'
 
 -- Decrease update time to optimize find files
 vim.opt.updatetime = 500
-vim.opt.timeoutlen = 500
 vim.opt.redrawtime = 1500
 vim.opt.hidden = true
-vim.opt.wildignore:append {
-  '*/node_modules/*',
-  '*/.git/*',
-  '*/target/*',
-  '*/dist/*',
-  '*/build/*',
-}
 
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
@@ -113,20 +110,24 @@ vim.g.rust_fold = 1
 vim.opt.modeline = true
 vim.opt.modelines = 5
 
+-- Filetypes kept free of visible diagnostics. Entries marked `treesitter` also
+-- have treesitter stopped for the buffer.
 local quiet_diagnostic_filetypes = {
-  typescript = true,
-  typescriptreact = true,
-  markdown = true,
-  yaml = true,
+  typescript = {},
+  typescriptreact = {},
+  markdown = { treesitter = true },
+  yaml = { treesitter = true },
 }
 
 local function quiet_diagnostics(bufnr)
-  local filetype = vim.bo[bufnr].filetype
-  if quiet_diagnostic_filetypes[filetype] then
-    vim.diagnostic.enable(false, { bufnr = bufnr })
+  local quiet = quiet_diagnostic_filetypes[vim.bo[bufnr].filetype]
+  if not quiet then
+    return
   end
 
-  if filetype == 'markdown' or filetype == 'yaml' then
+  vim.diagnostic.enable(false, { bufnr = bufnr })
+
+  if quiet.treesitter then
     vim.api.nvim_buf_call(bufnr, function()
       pcall(vim.treesitter.stop)
     end)
